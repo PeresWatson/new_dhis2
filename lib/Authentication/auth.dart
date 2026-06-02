@@ -1,0 +1,30 @@
+import 'package:dhis_2/screens/home/home_screen.dart';
+import 'package:dhis_2/screens/login/login_screen.dart';
+import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+
+class AppStorageService extends GetxController {
+  final userStateBox = GetStorage();
+
+  @override
+  void onReady() {
+    screenRedirect();
+  }
+
+  void screenRedirect() {
+    final bool isFirstTime = userStateBox.read('isFirstTime') ?? true;
+    final bool isLoggedIn = userStateBox.read('isLoggedIn') ?? false;
+
+    if (isFirstTime) {
+      // 1. Brand new user -> Show Onboarding
+      Get.offAll(() => const OnboardingScreen());
+    } else if (isLoggedIn) {
+      // 2. Returning user who is already authenticated -> Show Home Dashboard
+      Get.offAll(() => HomeScreen());
+    } else {
+      // 3. Returning user who is logged out -> Show Login Screen
+      Get.offAll(() => LoginScreen());
+    }
+  }
+}
