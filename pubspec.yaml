@@ -25,6 +25,7 @@ dependencies:
   http: ^1.6.0
   flutter_animate: ^4.5.2
   connectivity_plus: ^7.1.1
+  dio: ^5.9.2
 
 dev_dependencies:
   flutter_test:
