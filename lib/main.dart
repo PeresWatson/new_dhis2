@@ -33,7 +33,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'DHIS2 Mobile Client',
       initialBinding: GlobalBinding(),
-      home: PREVIEW_MODE ? const PreviewHomeScreen() : const OnboardingScreen(),
+      // home: PREVIEW_MODE ? const PreviewHomeScreen() : const OnboardingScreen(),
+      home: const PreviewHomeScreen(),
     );
   }
 }
