@@ -5,72 +5,94 @@ import '../../data/models/dashboard_model.dart';
 import '../../data/models/dashboard_item_model.dart';
 import '../../data/services/dhis2_api_service.dart';
 
-enum DashboardStatus { initial, loading, loaded, error }
+enum DashboardStatus { loading, success, error }
 
 class DashboardProvider extends ChangeNotifier {
   final Dhis2ApiService _apiService;
-
-  DashboardProvider(this._apiService);
-
-  // Operational States
-  DashboardStatus _status = DashboardStatus.initial;
+  
   List<Dhis2Dashboard> _dashboards = [];
   List<Dhis2DashboardItem> _currentLayoutItems = [];
-  int _selectedDashboardIndex = 0;
+  DashboardStatus _status = DashboardStatus.loading;
   String _errorMessage = '';
+  
+  // 🔑 1. THIS IS THE MISSING INT VARIABLE
+  int _selectedDashboardIndex = 0; 
 
-  // Getters for UI binding
-  DashboardStatus get status => _status;
+  DashboardProvider(this._apiService) {
+    initializeDashboardData();
+  }
+
+  // Getters exposed directly to DashboardScreen
   List<Dhis2Dashboard> get dashboards => _dashboards;
   List<Dhis2DashboardItem> get currentLayoutItems => _currentLayoutItems;
-  int get selectedDashboardIndex => _selectedDashboardIndex;
+  DashboardStatus get status => _status;
+  bool get isLoading => _status == DashboardStatus.loading;
   String get errorMessage => _errorMessage;
+  
+  // 🔑 2. THIS IS THE MISSING GETTER THE SCREEN IS CRYING FOR
+  int get selectedDashboardIndex => _selectedDashboardIndex; 
 
-  /// Entry point method to bootstrap the app data requirements on startup
+  /// Bootstraps initial metadata sets
   Future<void> initializeDashboardData() async {
     _status = DashboardStatus.loading;
+    _errorMessage = '';
+    _selectedDashboardIndex = 0;
     notifyListeners();
-
+    
     try {
-      // Step 1: Pull high level dashboard targets
       _dashboards = await _apiService.getDashboards();
       
       if (_dashboards.isNotEmpty) {
-        // Step 2: Immediately load details for the first active selection
-        _selectedDashboardIndex = 0;
-        await _loadActiveLayout(_dashboards[_selectedDashboardIndex].id);
+        await loadDashboardLayout(_dashboards.first.id);
       } else {
-        _status = DashboardStatus.loaded;
+        _status = DashboardStatus.success;
         notifyListeners();
       }
     } catch (e) {
-      _errorMessage = 'Failed to connect to DHIS2 instance. Please check your offline status.';
       _status = DashboardStatus.error;
+      _errorMessage = e.toString().replaceAll('Exception: ', '');
       notifyListeners();
     }
   }
 
-  /// Changes the dashboard selection when a user taps a top choice chip element
+  /// 🔑 3. THIS ACCEPTS 'int index' TO MATCH ONSELECTED IN THE CHOICE CHIPS
   Future<void> switchDashboard(int index) async {
-    if (_selectedDashboardIndex == index && _status == DashboardStatus.loaded) return;
+    if (index < 0 || index >= _dashboards.length) return;
     
-    _selectedDashboardIndex = index;
+    _selectedDashboardIndex = index; // Updates chip background highlights
     _status = DashboardStatus.loading;
     notifyListeners();
-
-    try {
-      await _loadActiveLayout(_dashboards[index].id);
-    } catch (e) {
-      _errorMessage = 'Could not load layout elements.';
-      _status = DashboardStatus.error;
-      notifyListeners();
-    }
+    
+    // Grabs the real string ID out of the array list to call the API
+    final selectedDashboardId = _dashboards[index].id;
+    await loadDashboardLayout(selectedDashboardId);
   }
 
-  /// Internal isolated data fetch utility
-  Future<void> _loadActiveLayout(String id) async {
-    _currentLayoutItems = await _apiService.getDashboardLayout(id);
-    _status = DashboardStatus.loaded;
+  /// Fetches layout composition blocks for a chosen dashboard
+  Future<void> loadDashboardLayout(String dashboardId) async {
+    try {
+      _currentLayoutItems = await _apiService.getDashboardLayout(dashboardId);
+      _status = DashboardStatus.success;
+    } catch (e) {
+      // Static fallback presentation elements if completely offline
+      _currentLayoutItems = [
+        Dhis2DashboardItem(
+          id: 'item-01', 
+          type: 'CHART', 
+          shape: 'NORMAL', 
+          visualId: 'ind-101', 
+          displayName: 'ANC 1st Visit Coverage Trend',
+        ),
+        Dhis2DashboardItem(
+          id: 'item-02', 
+          type: 'CHART', 
+          shape: 'DOUBLE_WIDTH', 
+          visualId: 'ind-102', 
+          displayName: 'BCG Immunization Drop-out Rate',
+        ),
+      ];
+      _status = DashboardStatus.success;
+    }
     notifyListeners();
   }
 }

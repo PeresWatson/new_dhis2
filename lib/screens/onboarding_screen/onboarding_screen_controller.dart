@@ -1,4 +1,3 @@
-import 'package:dhis_2/Notifications/app_snackbars.dart';
 import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

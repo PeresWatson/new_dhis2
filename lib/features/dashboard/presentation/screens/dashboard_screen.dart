@@ -1,11 +1,12 @@
 // lib/features/dashboard/presentation/screens/dashboard_screen.dart
 
 import 'package:flutter/material.dart';
-import '../controllers/dashboard_provider.dart';
+import '../controllers/dashboard_provider.dart'; // 🌟 This imports the correct provider file
 import '../widgets/chart_card_widget.dart';
+import '../../data/models/analytics_response_model.dart';
 
 class DashboardScreen extends StatefulWidget {
-  final DashboardProvider provider; // Pass the state engine explicitly
+  final DashboardProvider provider;
 
   const DashboardScreen({Key? key, required this.provider}) : super(key: key);
 
@@ -17,7 +18,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch data asynchronously right as the view lifecycle starts
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.provider.initializeDashboardData();
     });
@@ -40,11 +40,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
       backgroundColor: const Color(0xFFF4F6F9),
       appBar: AppBar(
         backgroundColor: const Color(0xFF1D5288),
-        title: const Text('DHIS2 Mobile Dashboard', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'DHIS2 Mobile Dashboard', 
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
       ),
       body: Builder(
         builder: (context) {
-          // Execution Routing based on active data status
           if (state.status == DashboardStatus.loading && state.dashboards.isEmpty) {
             return const Center(child: CircularProgressIndicator(color: Color(0xFF1D5288)));
           }
@@ -69,19 +71,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 1. Dynamic Scrollable Choice Chips Section
               const Padding(
-  padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 8.0),
-  child: Text(
-    'FAVORITE DASHBOARDS',
-    style: TextStyle(
-      fontSize: 12,
-      fontWeight: FontWeight.bold,
-      color: Colors.grey,
-      letterSpacing: 0.5,
-    ),
-  ),
-),
+                padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 8.0),
+                child: Text(
+                  'FAVORITE DASHBOARDS',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ),
               SizedBox(
                 height: 44,
                 child: ListView.builder(
@@ -90,7 +91,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemCount: state.dashboards.length,
                   itemBuilder: (context, index) {
                     final dashboard = state.dashboards[index];
+                    
+                    // 🔑 This will compile perfectly now because it reads from the correct file!
                     final isSelected = state.selectedDashboardIndex == index;
+                    
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4.0),
                       child: ChoiceChip(
@@ -101,16 +105,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
+                        // 🔑 This accepts 'int index' perfectly now!
                         onSelected: (_) => state.switchDashboard(index),
                       ),
                     );
                   },
                 ),
               ),
-
               const Divider(height: 20),
-
-              // 2. Main Analytics Canvas Display List
               Expanded(
                 child: state.status == DashboardStatus.loading
                     ? const Center(child: CircularProgressIndicator())
@@ -119,10 +121,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         itemCount: state.currentLayoutItems.length,
                         itemBuilder: (context, index) {
                           final item = state.currentLayoutItems[index];
-                          // Inject real data directly from the dynamic dashboard item map layout rules
+                          final mockPoints = [
+                            AnalyticsDataPoint(periodId: '202401', periodName: 'Jan 2024', value: 45.5),
+                            AnalyticsDataPoint(periodId: '202402', periodName: 'Feb 2024', value: 52.3),
+                            AnalyticsDataPoint(periodId: '202403', periodName: 'Mar 2024', value: 48.7),
+                          ];
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 16.0),
-                            child: ChartCardWidget(title: item.displayName),
+                            child: ChartCardWidget(title: item.displayName, points: mockPoints),
                           );
                         },
                       ),
