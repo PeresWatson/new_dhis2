@@ -1,7 +1,7 @@
 // lib/features/dashboard/presentation/screens/dashboard_screen.dart
 
 import 'package:flutter/material.dart';
-import '../controllers/dashboard_provider.dart'; // 🌟 This imports the correct provider file
+import '../controllers/dashboard_provider.dart';
 import '../widgets/chart_card_widget.dart';
 import '../../data/models/analytics_response_model.dart';
 
@@ -71,16 +71,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // 1. Horizontally scrolling favorite dashboard modules selection chips
               const Padding(
                 padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 8.0),
                 child: Text(
                   'FAVORITE DASHBOARDS',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey,
-                    letterSpacing: 0.5,
-                  ),
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 0.5),
                 ),
               ),
               SizedBox(
@@ -91,8 +87,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemCount: state.dashboards.length,
                   itemBuilder: (context, index) {
                     final dashboard = state.dashboards[index];
-                    
-                    // 🔑 This will compile perfectly now because it reads from the correct file!
                     final isSelected = state.selectedDashboardIndex == index;
                     
                     return Padding(
@@ -105,7 +99,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           color: isSelected ? Colors.white : Colors.black87,
                           fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                         ),
-                        // 🔑 This accepts 'int index' perfectly now!
                         onSelected: (_) => state.switchDashboard(index),
                       ),
                     );
@@ -113,22 +106,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const Divider(height: 20),
+              
+              // 2. High-Performance Graph Canvas Grid View (Line Charts & Bar Charts interspersed)
               Expanded(
                 child: state.status == DashboardStatus.loading
-                    ? const Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator(color: Color(0xFF1D5288)))
                     : ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         itemCount: state.currentLayoutItems.length,
                         itemBuilder: (context, index) {
                           final item = state.currentLayoutItems[index];
-                          final mockPoints = [
-                            AnalyticsDataPoint(periodId: '202401', periodName: 'Jan 2024', value: 45.5),
-                            AnalyticsDataPoint(periodId: '202402', periodName: 'Feb 2024', value: 52.3),
-                            AnalyticsDataPoint(periodId: '202403', periodName: 'Mar 2024', value: 48.7),
+                          
+                          // 📈 Multi-month analytics array matrix points
+                          final visualizationPoints = [
+                            AnalyticsDataPoint(periodId: '202501', periodName: 'Jan', value: 38.5),
+                            AnalyticsDataPoint(periodId: '202502', periodName: 'Feb', value: 55.2),
+                            AnalyticsDataPoint(periodId: '202503', periodName: 'Mar', value: 42.0),
+                            AnalyticsDataPoint(periodId: '202504', periodName: 'Apr', value: 68.7),
+                            AnalyticsDataPoint(periodId: '202505', periodName: 'May', value: 51.3),
+                            AnalyticsDataPoint(periodId: '202506', periodName: 'Jun', value: 79.4),
                           ];
+
                           return Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: ChartCardWidget(title: item.displayName, points: mockPoints),
+                            padding: const EdgeInsets.only(bottom: 14.0),
+                            child: ChartCardWidget(
+                              title: item.displayName,
+                              chartType: item.type, // ✅ Pass 'BAR_CHART' or 'LINE_CHART' dynamically!
+                              points: visualizationPoints,
+                            ),
                           );
                         },
                       ),
