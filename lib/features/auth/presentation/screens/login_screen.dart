@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Padding(
   padding: const EdgeInsets.only(bottom: 6.0, left: 2.0),
   child: Text(
-    "Your Title Here",
+    "",
     style: const TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: 13,
