@@ -216,7 +216,7 @@ class HomeScreen extends StatelessWidget {
 
                             filteredDashboards.value = (all as List)
                                 .where(
-                                  (d) => (d['displayName'] ?? '')
+                                  (d) => (d['displayName'] ?? '').toString()
                                       .toLowerCase()
                                       .contains(value.toLowerCase()),
                                 )
