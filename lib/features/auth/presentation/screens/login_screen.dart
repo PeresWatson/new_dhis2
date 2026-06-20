@@ -8,10 +8,10 @@ class LoginScreen extends StatefulWidget {
   final VoidCallback onLoginSuccess; // Callback to route to Dashboard after auth
 
   const LoginScreen({
-    Key? key,
+    super.key,
     required this.provider,
     required this.onLoginSuccess,
-  }) : super(key: key);
+  });
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();

@@ -8,7 +8,7 @@ import '../../data/models/analytics_response_model.dart';
 class DashboardScreen extends StatefulWidget {
   final DashboardProvider provider;
 
-  const DashboardScreen({Key? key, required this.provider}) : super(key: key);
+  const DashboardScreen({super.key, required this.provider});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();

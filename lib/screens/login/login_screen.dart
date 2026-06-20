@@ -1,3 +1,4 @@
+import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dhis_2/Notifications/app_loaders.dart';
@@ -6,7 +7,7 @@ import 'package:dhis_2/screens/login/login_screen_controller.dart';
 import '../home/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  LoginScreen({Key? key}) : super(key: key);
+  LoginScreen({super.key});
 
   // Injecting your defined controller
   final LoginController controller = Get.find<LoginController>();
@@ -175,7 +176,7 @@ class LoginScreen extends StatelessWidget {
                       title: controller.titleSuccess,
                       message: controller.msgLoginSuccess,
                     );
-                    Get.off(() => HomeScreen());
+                    Get.off(() => NavigationMenu());
                   }
                 },
                 style: ElevatedButton.styleFrom(

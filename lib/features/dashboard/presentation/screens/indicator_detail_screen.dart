@@ -9,10 +9,10 @@ class IndicatorDetailScreen extends StatefulWidget {
   final IndicatorDetailProvider provider;
 
   const IndicatorDetailScreen({
-    Key? key, 
+    super.key, 
     required this.visualId, 
     required this.provider,
-  }) : super(key: key);
+  });
 
   @override
   State<IndicatorDetailScreen> createState() => _IndicatorDetailScreenState();
@@ -96,7 +96,7 @@ class _IndicatorDetailScreenState extends State<IndicatorDetailScreen> {
                         color: Colors.white,
                         width: double.infinity,
                         child: DataTable(
-                          headingRowColor: MaterialStateProperty.all(const Color(0xFF1D5288).withOpacity(0.05)),
+                          headingRowColor: WidgetStateProperty.all(const Color(0xFF1D5288).withOpacity(0.05)),
                           horizontalMargin: 16,
                           columnSpacing: 24,
                           columns: const [

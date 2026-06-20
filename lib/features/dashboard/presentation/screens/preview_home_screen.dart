@@ -13,7 +13,7 @@ import '../../data/services/dhis2_api_service.dart';
 class PreviewHomeScreen extends StatefulWidget {
   final Dhis2HttpClient networkClient;
 
-  const PreviewHomeScreen({Key? key, required this.networkClient}) : super(key: key);
+  const PreviewHomeScreen({super.key, required this.networkClient});
 
   @override
   State<PreviewHomeScreen> createState() => _PreviewHomeScreenState();
@@ -48,7 +48,6 @@ class _PreviewHomeScreenState extends State<PreviewHomeScreen> {
             visualId: 'b0239485',
             provider: indicatorDetailProvider,
           ),
-          SettingsScreen(provider: settingsProvider),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

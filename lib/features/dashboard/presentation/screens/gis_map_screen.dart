@@ -6,7 +6,7 @@ import '../controllers/gis_map_provider.dart';
 class GisMapScreen extends StatefulWidget {
   final GisMapProvider provider;
 
-  const GisMapScreen({Key? key, required this.provider}) : super(key: key);
+  const GisMapScreen({super.key, required this.provider});
 
   @override
   State<GisMapScreen> createState() => _GisMapScreenState();

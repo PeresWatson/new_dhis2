@@ -27,6 +27,9 @@ dependencies:
   connectivity_plus: ^7.1.1
   dio: ^5.9.2
   fl_chart: ^1.2.0
+  dropdown_search: ^7.0.0
+  iconsax: ^0.0.8
+  drop_down_list: ^2.1.1
 
 dev_dependencies:
   flutter_test:

@@ -10,11 +10,11 @@ class ChartCardWidget extends StatelessWidget {
   final List<AnalyticsDataPoint> points;
 
   const ChartCardWidget({
-    Key? key,
+    super.key,
     required this.title,
     required this.chartType,
     required this.points,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

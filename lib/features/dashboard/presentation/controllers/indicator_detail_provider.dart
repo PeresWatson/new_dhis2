@@ -7,8 +7,8 @@ enum IndicatorStatus { loading, success, error }
 
 class IndicatorDetailProvider extends ChangeNotifier {
   IndicatorStatus _status = IndicatorStatus.loading;
-  String _indicatorName = 'ANC 4th+ Visit Coverage Performance (%)';
-  String _indicatorDefinition = 'Percentage of pregnant women who attended at least 4 Antenatal Care visits during their pregnancy term.';
+  final String _indicatorName = 'ANC 4th+ Visit Coverage Performance (%)';
+  final String _indicatorDefinition = 'Percentage of pregnant women who attended at least 4 Antenatal Care visits during their pregnancy term.';
   List<AnalyticsDataPoint> _historicalPoints = [];
   Map<String, double> _regionalBreakdown = {};
 

@@ -1,5 +1,6 @@
 import 'package:dhis_2/screens/home/home_screen.dart';
 import 'package:dhis_2/screens/login/login_screen.dart';
+import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -21,7 +22,7 @@ class AppStorageService extends GetxController {
       Get.offAll(() => const OnboardingScreen());
     } else if (isLoggedIn) {
       // 2. Returning user who is already authenticated -> Show Home Dashboard
-      Get.offAll(() => HomeScreen());
+      Get.offAll(() => NavigationMenu());
     } else {
       // 3. Returning user who is logged out -> Show Login Screen
       Get.offAll(() => LoginScreen());

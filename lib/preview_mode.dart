@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'features/dashboard/presentation/screens/indicator_detail_screen.dart';
-import 'features/dashboard/presentation/screens/settings_screen.dart';
 import 'features/dashboard/presentation/controllers/dashboard_provider.dart';
 import 'features/dashboard/presentation/controllers/indicator_detail_provider.dart';
 import 'features/dashboard/presentation/controllers/settings_provider.dart';
 import 'features/dashboard/data/services/dhis2_api_service.dart';
 
 class PreviewHomeScreen extends StatefulWidget {
-  const PreviewHomeScreen({Key? key}) : super(key: key);
+  const PreviewHomeScreen({super.key});
 
   @override
   State<PreviewHomeScreen> createState() => _PreviewHomeScreenState();
@@ -45,7 +44,6 @@ class _PreviewHomeScreenState extends State<PreviewHomeScreen> {
             provider: indicatorDetailProvider,
           ),
           // Settings Screen
-          SettingsScreen(provider: settingsProvider),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

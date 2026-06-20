@@ -87,17 +87,6 @@ class LoginController extends GetxController {
       // 5. Check if the server accepted the credentials (200 OK)
       if (response.statusCode == 200) {
         userData = jsonDecode(response.body);
-        print(
-          "***********************************************************************",
-        );
-        print(
-          "**************THIS IS THE USER DATA OBJECT RETURNED FROM THE API****************",
-        );
-        print(userData);
-        print(
-          "***********************************************************************",
-        );
-
         // Save token and name to local storage for stateless persistence
         await _box.write('auth_credentials', authHeader);
         await _box.write('user_name', userData['name']);
