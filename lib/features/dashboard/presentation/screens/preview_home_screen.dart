@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import '../../../../core/network/dhis2_http_client.dart';
 import 'dashboard_screen.dart'; // 🔓 This will now resolve perfectly
 import 'indicator_detail_screen.dart';
-import 'settings_screen.dart';
 import '../controllers/dashboard_provider.dart';
 import '../controllers/indicator_detail_provider.dart';
 import '../controllers/settings_provider.dart';

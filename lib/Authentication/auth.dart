@@ -1,4 +1,3 @@
-import 'package:dhis_2/screens/home/home_screen.dart';
 import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';

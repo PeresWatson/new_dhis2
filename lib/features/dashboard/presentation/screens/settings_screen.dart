@@ -1,3 +1,5 @@
+import 'package:dhis_2/screens/login/login_screen.dart';
+import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -62,10 +64,7 @@ class SettingsScreen extends StatelessWidget {
         backgroundColor: const Color(0xFF1D5288),
         title: const Text(
           "Settings",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
       ),
 
@@ -127,9 +126,7 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   Widget _profileCard() {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 2,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -147,21 +144,9 @@ class SettingsScreen extends StatelessWidget {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      c.name.value,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Text(
-                      c.email.value,
-                      style: const TextStyle(color: Colors.grey),
-                    ),
-                    Text(
-                      c.role.value,
-                      style: const TextStyle(color: Colors.blue),
-                    ),
+                    Text(c.name.value, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text(c.email.value, style: const TextStyle(color: Colors.grey)),
+                    Text(c.role.value, style: const TextStyle(color: Colors.blue)),
                   ],
                 );
               }),
@@ -182,11 +167,7 @@ class SettingsScreen extends StatelessWidget {
           leading: const Icon(Icons.cloud, color: Color(0xFF1D5288)),
           title: const Text("Server Endpoint"),
           subtitle: Text(c.serverUrl.value),
-          trailing: Icon(
-            Icons.circle,
-            size: 12,
-            color: c.serverOnline.value ? Colors.green : Colors.red,
-          ),
+          trailing: Icon(Icons.circle, size: 12, color: c.serverOnline.value ? Colors.green : Colors.red),
         );
       }),
     );
@@ -200,27 +181,16 @@ class SettingsScreen extends StatelessWidget {
       child: Column(
         children: [
           Obx(() {
-            return SwitchListTile(
-              title: const Text("WiFi Only Sync"),
-              value: c.wifiOnly.value,
-              onChanged: c.toggleWifi,
-            );
+            return SwitchListTile(title: const Text("WiFi Only Sync"), value: c.wifiOnly.value, onChanged: c.toggleWifi);
           }),
           Obx(() {
-            return SwitchListTile(
-              title: const Text("Auto Sync"),
-              value: c.autoSync.value,
-              onChanged: c.toggleAutoSync,
-            );
+            return SwitchListTile(title: const Text("Auto Sync"), value: c.autoSync.value, onChanged: c.toggleAutoSync);
           }),
           ListTile(
             leading: const Icon(Icons.history),
             title: const Text("Last Sync"),
             subtitle: Obx(() => Text(c.lastSync.value)),
-            trailing: ElevatedButton(
-              onPressed: c.syncNow,
-              child: const Text("Sync"),
-            ),
+            trailing: ElevatedButton(onPressed: c.syncNow, child: const Text("Sync")),
           ),
         ],
       ),
@@ -234,16 +204,8 @@ class SettingsScreen extends StatelessWidget {
     return const Card(
       child: Column(
         children: [
-          ListTile(
-            leading: Icon(Icons.dashboard),
-            title: Text("Default Dashboard"),
-            subtitle: Text("Home Analytics"),
-          ),
-          ListTile(
-            leading: Icon(Icons.star),
-            title: Text("Favorites First"),
-            trailing: Icon(Icons.toggle_on),
-          ),
+          ListTile(leading: Icon(Icons.dashboard), title: Text("Default Dashboard"), subtitle: Text("Home Analytics")),
+          ListTile(leading: Icon(Icons.star), title: Text("Favorites First"), trailing: Icon(Icons.toggle_on)),
         ],
       ),
     );
@@ -279,11 +241,7 @@ class SettingsScreen extends StatelessWidget {
               const Text("Storage Usage"),
               const SizedBox(height: 10),
 
-              LinearProgressIndicator(
-                value: c.storageUsed.value,
-                backgroundColor: Colors.grey.shade300,
-                color: const Color(0xFF1D5288),
-              ),
+              LinearProgressIndicator(value: c.storageUsed.value, backgroundColor: Colors.grey.shade300, color: const Color(0xFF1D5288)),
 
               const SizedBox(height: 10),
 
@@ -291,10 +249,7 @@ class SettingsScreen extends StatelessWidget {
 
               const SizedBox(height: 12),
 
-              OutlinedButton(
-                onPressed: c.clearCache,
-                child: const Text("Clear Cache"),
-              ),
+              OutlinedButton(onPressed: c.clearCache, child: const Text("Clear Cache")),
             ],
           ),
         );
@@ -307,11 +262,7 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   Widget _securityCard() {
     return const Card(
-      child: ListTile(
-        leading: Icon(Icons.lock),
-        title: Text("Change Password"),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16),
-      ),
+      child: ListTile(leading: Icon(Icons.lock), title: Text("Change Password"), trailing: Icon(Icons.arrow_forward_ios, size: 16)),
     );
   }
 
@@ -322,15 +273,9 @@ class SettingsScreen extends StatelessWidget {
     return const Card(
       child: Column(
         children: [
-          ListTile(
-            leading: Icon(Icons.help),
-            title: Text("Help Center"),
-          ),
+          ListTile(leading: Icon(Icons.help), title: Text("Help Center")),
           Divider(height: 1),
-          ListTile(
-            leading: Icon(Icons.bug_report),
-            title: Text("Report Issue"),
-          ),
+          ListTile(leading: Icon(Icons.bug_report), title: Text("Report Issue")),
         ],
       ),
     );
@@ -341,11 +286,7 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   Widget _aboutCard() {
     return const Card(
-      child: ListTile(
-        leading: Icon(Icons.info),
-        title: Text("DHIS2 Mobile Dashboard"),
-        subtitle: Text("Version 1.0.0"),
-      ),
+      child: ListTile(leading: Icon(Icons.info), title: Text("DHIS2 Mobile Dashboard"), subtitle: Text("Version 1.0.0")),
     );
   }
 
@@ -354,17 +295,28 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   Widget _logoutCard() {
     return Card(
+      
       color: Colors.red.shade50,
-      child: ListTile(
-        leading: const Icon(Icons.logout, color: Colors.red),
-        title: const Text(
-          "Logout",
-          style: TextStyle(
-            color: Colors.red,
-            fontWeight: FontWeight.bold,
+      child: GestureDetector(
+        onTap: () {
+          Get.off(() => LoginScreen());
+          Get.find<NavigationController>().selectedScreenIndex.value = 0;
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+          
+              Icon(Icons.logout, color: Colors.red),
+              Text(
+                "Logout",
+                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
         ),
-        onTap: c.logout,
       ),
     );
   }
@@ -377,11 +329,7 @@ class SettingsScreen extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          color: Colors.grey,
-          letterSpacing: 1.2,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
       ),
     );
   }

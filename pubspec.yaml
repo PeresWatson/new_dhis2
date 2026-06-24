@@ -30,6 +30,8 @@ dependencies:
   dropdown_search: ^7.0.0
   iconsax: ^0.0.8
   drop_down_list: ^2.1.1
+  flutter_markdown_plus: ^1.0.7
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   flutter_test:

@@ -5,7 +5,6 @@ import 'package:dhis_2/screens/login/login_screen_controller.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:dhis_2/utils/network_controller.dart';
-import 'package:dhis_2/preview_mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';

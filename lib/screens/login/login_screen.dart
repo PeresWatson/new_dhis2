@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:dhis_2/Notifications/app_loaders.dart';
 import 'package:dhis_2/Notifications/app_snackbars.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
-import '../home/home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   LoginScreen({super.key});
@@ -127,6 +126,34 @@ class LoginScreen extends StatelessWidget {
 
                     // Password Text Field Input
                     TextField(
+                      onSubmitted: (value) async {
+                         String username = controller.usernameController.text.trim();
+                  String password = controller.passwordController.text.trim();
+
+                  print(
+                    "Attempting login with URL: ${controller.urlController.text}, Username: $username , password: $password",
+                  );
+
+                  if (username.isEmpty || password.isEmpty) {
+                    AppSnackbars.showError(
+                      title: controller.titleError,
+                      message: controller.errEmptyFields,
+                    );
+                    return;
+                  }
+
+                  bool success = await controller.login(username, password);
+
+                  if (success) {
+                    AppLoaders.hideLoadingOverlay();
+                    AppSnackbars.showSuccess(
+                      title: controller.titleSuccess,
+                      message: controller.msgLoginSuccess,
+                    );
+                    
+                    Get.off(() => NavigationMenu());
+                  }
+                      },
                       controller: controller.passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
