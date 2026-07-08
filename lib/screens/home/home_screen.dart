@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:dhis_2/common/widgets/network_banner.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
-import 'package:dhis_2/utils/network_controller.dart';
+import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get/get.dart';
@@ -39,37 +39,36 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     const SizedBox(width: 10),
-                    Image.asset('logo/logo_white.png', width: 25, height: 25),
+                    Image.asset('assets/logo/logo_white.png', width: 25, height: 25),
                     const SizedBox(width: 10),
 
                     Text(
-                      "DHIS2 - ${logincontroller.userData["displayName"] ?? 'User'}",
+                      "DHIS2 - ${Get.find<NavigationController>().currentUser.value?.name ?? 'User'}",
                       style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.w600),
                     ),
 
                     const Spacer(),
 
                     Visibility(
-                      visible: false,
+                      visible: true,
                       child: CircleAvatar(
                         radius: 12,
                         backgroundColor: const Color.fromARGB(255, 82, 70, 117),
                         child: Text(
-                          logincontroller.userData['firstName'] != null
-                              ? "${logincontroller.userData['firstName'][0].toUpperCase()}${logincontroller.userData['surname'][0].toUpperCase()}"
+                          Get.find<NavigationController>().currentUser.value?.name != null
+                              ? "${Get.find<NavigationController>().currentUser.value?.name?[0].toUpperCase()}"
                               : "U",
                           style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),
-
                     const SizedBox(width: 10),
                   ],
                 ),
               ),
 
-              // ================= NETWORK =================
-              NetworkStatusBanner(isOnline: Get.find<NetworkController>().isOnline.value),
+              // ================= NETWORK ==========================
+              NetworkStatusBanner(),
 
               // ================= DROPDOWN TRIGGER =================
               GestureDetector(
@@ -166,7 +165,7 @@ class HomeScreen extends StatelessWidget {
                                                   decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
                                                   child: Image(
                                                     image: NetworkImage(
-                                                      'https://play.im.dhis2.org/dev/api/${(item['type'] as String).toLowerCase()}s/${item['${(item['type'] as String).toLowerCase()}']['id']}/data',
+                                                      'https://play.im.dhis2.org/dev/api/${(item['type'] as String).toLowerCase()}s/${item[(item['type'] as String).toLowerCase()]['id']}/data',
                                                       headers: {'Authorization': 'Basic ${base64Encode(utf8.encode('admin:district'))}'},
                                                     ),
                                                     // Makes sure the entire chart/map visualization fits legibly within the frame without stretching
@@ -296,11 +295,11 @@ class HomeScreen extends StatelessWidget {
 
                                       return ListTile(
                                         title: Text(dashboard['displayName'] ?? ''),
-                                        onTap: () {
-                                          hideDropdown();
+                                        onTap: () {  hideDropdown();
                                           homecontroller.selectedDashboardId.value = dashboard['id'] ?? '';
                                           homecontroller.selectedDashboardName.value = dashboard['displayName'] ?? '';
                                           homecontroller.fetchDashboardItems(dashboard['id'] ?? '');
+                                          // homecontroller.loadDashboardData( dashboard['id'] ?? '');
                                         },
                                       );
                                     },

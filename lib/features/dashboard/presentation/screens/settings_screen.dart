@@ -1,3 +1,4 @@
+import 'package:dhis_2/core/services/d2_touch_service.dart';
 import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
@@ -298,7 +299,8 @@ class SettingsScreen extends StatelessWidget {
       
       color: Colors.red.shade50,
       child: GestureDetector(
-        onTap: () {
+        onTap: () async {
+         Get.find<D2Service>().d2.authModule.logOut(); // Call the logout method from D2Service
           Get.off(() => LoginScreen());
           Get.find<NavigationController>().selectedScreenIndex.value = 0;
         },

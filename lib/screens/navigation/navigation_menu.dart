@@ -1,13 +1,46 @@
+import 'package:d2_touch/modules/auth/entities/user.entity.dart';
+import 'package:dhis_2/core/services/d2_touch_service.dart';
 import 'package:dhis_2/features/dashboard/presentation/screens/settings_screen.dart';
+import 'package:dhis_2/screens/analytics_screen/analytic_screen.dart';
 import 'package:dhis_2/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NavigationController extends GetxController {
+  Rx<User?> currentUser = Rx<User?>(null);   // ← Store user globally
+
+
+  Future<void> loadCurrentUser() async {
+    try {
+      final User? user = await getCurrentUser();
+      currentUser.value = user;
+    } catch (e) {
+      print("Error loading user: $e");
+    }
+  }
+
+  // Add this helper method
+  Future<User?> getCurrentUser() async {
+    try {
+      final d2 = Get.find<D2Service>().d2; // or however you access your D2Touch instance
+      // if (d2 == null) return null;
+
+      return await d2.userModule.user
+          .withAuthorities()
+          .withRoles()
+          .getOne();
+    } catch (e) {
+      print("Error fetching user: $e");
+      return null;
+    }
+  }
+
+  // Your existing code
   var selectedScreenIndex = 0.obs;
+
   final List<Widget> screens = [
     HomeScreen(),
-    AnalyticsScreen(),
+    SimpleAnalyticsPage(),
     ExploreScreen(),
     SettingsScreen(),
   ];
@@ -24,6 +57,7 @@ class NavigationMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    controller.loadCurrentUser(); // Load user when the widget builds
     return Obx(
       () => Scaffold(
         body: controller.screens[controller.selectedScreenIndex.value],
@@ -56,18 +90,6 @@ class NavigationMenu extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// ANALYTICS TAB
-class AnalyticsScreen extends StatelessWidget {
-  const AnalyticsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Analytics', style: TextStyle(fontSize: 24))),
     );
   }
 }

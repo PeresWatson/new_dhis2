@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'package:d2_touch/modules/auth/models/login-response.model.dart';
 import 'package:dhis_2/Notifications/app_loaders.dart';
 import 'package:dhis_2/Notifications/app_snackbars.dart';
+import 'package:dhis_2/core/services/d2_touch_service.dart';
+import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -8,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
   final _box = GetStorage();
+  final obscurePassword = true.obs;
 
   // Reactive loading state for the UI
   var isLoading = false.obs;
@@ -33,17 +37,12 @@ class LoginController extends GetxController {
   // Alert Text Properties
   final String titleSuccess = "Success";
   final String titleError = "Authentication Error";
-  final String errEmptyFields =
-      "All credential parameters are strictly required.";
+  final String errEmptyFields = "All credential parameters are strictly required.";
   final String msgLoginSuccess = "Access authorization granted successfully.";
-  final String errWrongCredentials =
-      "The username or password combination is incorrect.";
-  final String errUnauthorized =
-      "Invalid credentials profile or unauthorized access.";
-  final String errServerError =
-      "Target gateway system responded with an internal status code error (500).";
-  final String errUnexpected =
-      "Could not establish server handshake connection. Check URL syntax.";
+  final String errWrongCredentials = "The username or password combination is incorrect.";
+  final String errUnauthorized = "Invalid credentials profile or unauthorized access.";
+  final String errServerError = "Target gateway system responded with an internal status code error (500).";
+  final String errUnexpected = "Could not establish server handshake connection. Check URL syntax.";
 
   @override
   void onInit() {
@@ -60,10 +59,51 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
+  // final isLoading = false.obs;
+
+  Future<void> D2login({required String url, required String username, required String password}) async {
+    try {
+      isLoading.value = true;
+      // AppLoaders.showLoadingOverlay(message: "authenticating..");
+
+      final result = await Get.find<D2Service>().d2.authModule.logIn(username: username, password: password, url: url);
+
+      switch (result) {
+        case LoginResponseStatus.ONLINE_LOGIN_SUCCESS:
+          isLoading.value = false;
+          AppLoaders.hideLoadingOverlay();
+          AppSnackbars.showSuccess(title: titleSuccess, message: msgLoginSuccess);
+          Get.off(() => NavigationMenu());
+          break;
+
+        case LoginResponseStatus.WRONG_CREDENTIALS:
+          isLoading.value = false;
+          AppLoaders.hideLoadingOverlay();
+          AppSnackbars.showError(title: "Login Failed", message: 'Invalid username or password', position: SnackPosition.TOP);
+          break;
+
+        case LoginResponseStatus.SERVER_ERROR:
+          isLoading.value = false;
+          AppLoaders.hideLoadingOverlay();
+          AppSnackbars.showError(title: "Login Failed", message: errServerError, position: SnackPosition.TOP);
+          break;
+
+        default:
+          isLoading.value = false;
+          Get.snackbar('Login Failed', result.toString());
+      }
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+      print(e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
   /// Communicates with DHIS2 Web API endpoint utilizing standard Basic Authentication headers
   Future<void> loginUser() async {}
 
-  Future<bool> login(String username, String password) async {
+  Future<void> login(String username, String password) async {
     try {
       // isLoading.value = true;
       AppLoaders.showLoadingOverlay(message: "authenticating..");
@@ -79,10 +119,7 @@ class LoginController extends GetxController {
       String authHeader = 'Basic $base64Token';
 
       // 4. Send GET request to the user profile endpoint
-      final response = await http.get(
-        Uri.parse('$baseUrl/api/me.json'),
-        headers: {'Authorization': authHeader, 'Accept': 'application/json'},
-      );
+      final response = await http.get(Uri.parse('$baseUrl/api/me.json'), headers: {'Authorization': authHeader, 'Accept': 'application/json'});
 
       // 5. Check if the server accepted the credentials (200 OK)
       if (response.statusCode == 200) {
@@ -92,19 +129,17 @@ class LoginController extends GetxController {
         await _box.write('user_name', userData['name']);
         await _box.write('isLoggedIn', true);
 
-        return true;
-      } else {
+        isLoading.value = false;
         AppLoaders.hideLoadingOverlay();
-        AppSnackbars.showError(
-          title: "Login Failed",
-          message: 'Invalid username or password',
-          position: SnackPosition.TOP,
-        );
-        return false;
+        AppSnackbars.showSuccess(title: titleSuccess, message: msgLoginSuccess);
+        Get.off(() => NavigationMenu());
+      } else {
+        isLoading.value = false;
+        AppLoaders.hideLoadingOverlay();
+        AppSnackbars.showError(title: "Login Failed", message: 'Invalid username or password', position: SnackPosition.TOP);
       }
     } catch (e) {
       Get.snackbar('Error', 'Network connection issue: $e');
-      return false;
     } finally {
       isLoading.value = false;
     }
