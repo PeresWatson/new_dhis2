@@ -3,6 +3,7 @@ import 'package:dhis_2/binding/global_binding.dart';
 import 'package:dhis_2/core/services/d2_touch_service.dart';
 import 'package:dhis_2/main.reflectable.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
+import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
@@ -17,11 +18,13 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   initializeReflectable();
-  final prefs = await SharedPreferences.getInstance();
+  await SharedPreferences.getInstance();
   // Initialize d2_touch at app start
-  await Get.putAsync<D2Service>(() => D2Service().init(
-   
-  ), permanent: true);
+  try {
+    await Get.putAsync<D2Service>(() => D2Service().init(), permanent: true);
+  } catch (_) {
+    Get.put(D2Service(), permanent: true);
+  }
 
   await GetStorage.init();
   Get.put(AppStorageService());
@@ -45,8 +48,13 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'DHIS2 Mobile Client',
       initialBinding: GlobalBinding(),
+      initialRoute: '/onboarding',
+      getPages: [
+        GetPage(name: '/onboarding', page: () => const OnboardingScreen()),
+        GetPage(name: '/login', page: () => LoginScreen()),
+        GetPage(name: '/navigation-menu', page: () => NavigationMenu()),
+      ],
       home: const OnboardingScreen(),
     );
   }
 }
-

@@ -1,159 +1,100 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
 class HomeController extends GetxController {
-  var dashboards = jsonDecode('{}');
-  var dashboardItems = jsonDecode('{}');
-
+  final dashboards = <String, dynamic>{}.obs;
+  final dashboardItems = <String, dynamic>{}.obs;
   final dashboardVisualizations = <Map<String, dynamic>>[].obs;
-  final String baseUrl = "https://play.im.dhis2.org/dev";
-  final String username = "admin";
-  final String password = "district";
-  Map<String, String> get headers => {
-    "Authorization": "Basic ${base64Encode(utf8.encode('$username:$password'))}",
-    "Content-Type": "application/json",
-  };
 
-  var visualizationDetails = jsonDecode('{}');
-  var selectedDashboardName = ''.obs;
-  var selectedDashboardId = ''.obs;
-  var isfetchingDashboards = false.obs;
-  var isfetchingDashboardItems = false.obs;
-
-  // ***********************Fetching dasboards details by its id************************************
-  Future<Map<String, dynamic>> getDashboard(String dashboardId) async {
-    final response = await http.get(Uri.parse("$baseUrl/api/dashboards/$dashboardId.json"), headers: headers);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    throw Exception("Failed to load dashboard");
-  }
-
-  // ***********************Fetching visualization details by its id************************************
-  Future<Map<String, dynamic>> getVisualization(String visualizationId) async {
-    final response = await http.get(Uri.parse("$baseUrl/api/visualizations/$visualizationId.json"), headers: headers);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    throw Exception("Failed to load visualization");
-  }
-
-  // ***********************Fetching analytics details by its url************************************
-  Future<Map<String, dynamic>> getAnalytics(String url) async {
-    final response = await http.get(Uri.parse(url), headers: headers);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    throw Exception("Failed to load analytics");
-  }
-
+  final visualizations = <Map<String, dynamic>>[].obs;
+  final visualizationDetails = <String, dynamic>{}.obs;
+  final selectedDashboardName = ''.obs;
+  final selectedDashboardId = ''.obs;
+  final isfetchingDashboards = false.obs;
+  final isfetchingDashboardItems = false.obs;
 
   Future<void> fetchDashboards() async {
-    isfetchingDashboards.value = true;
-    String username = "admin";
-    String password = "district";
-
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-    final response = await http.get(
-      Uri.parse("https://play.im.dhis2.org/dev/api/dashboards.json"),
-      headers: {"Authorization": basicAuth, "Content-Type": "application/json"},
-    );
-
-    if (response.statusCode == 200) {
-      dashboards = jsonDecode(response.body);
-      selectedDashboardName.value = dashboards['dashboards'][0]['displayName'];
-      selectedDashboardId.value = dashboards['dashboards'][0]['id'];
-      isfetchingDashboards.value = false;
-    } else {
-      print("Failed: ${response.statusCode}");
-      isfetchingDashboards.value = false;
+    if (dashboards.isNotEmpty) {
+      return;
     }
+
+    isfetchingDashboards.value = true;
+    try {
+      final seedJson = await rootBundle.loadString('assets/data/dhis2_dashboard_seed.json');
+      final decoded = jsonDecode(seedJson) as Map<String, dynamic>;
+      dashboards.value = decoded;
+
+      final dashboardList = decoded['dashboards'] as List? ?? <dynamic>[];
+      if (dashboardList.isNotEmpty) {
+        final firstDashboard = dashboardList.first as Map<String, dynamic>;
+        selectedDashboardId.value = firstDashboard['id'].toString();
+        selectedDashboardName.value = firstDashboard['name'].toString();
+        await fetchDashboardItems(firstDashboard['id'].toString());
+      }
+    } catch (e) {
+      dashboards.value = {
+        'dashboards': [
+          {
+            'id': 'fallback',
+            'name': 'Fallback Dashboard',
+            'description': 'Seed data is temporarily unavailable.',
+            'visualizationCount': 1,
+            'category': 'Health',
+            'visualizations': [
+              {
+                'id': 'fallback-viz',
+                'dashboardId': 'fallback',
+                'title': 'Fallback Visualization',
+                'description': 'The local seed file could not be loaded.',
+                'indicatorCode': 'FALLBACK',
+                'indicatorName': 'Fallback KPI',
+                'defaultRenderType': 'kpi',
+                'availableRenderTypes': ['kpi', 'table'],
+                'allowDrillDown': false,
+                'data': {'type': 'kpi', 'value': 100, 'unit': '%', 'trend': 'up', 'previousValue': 90, 'target': 100},
+              },
+            ],
+          },
+        ],
+      };
+      selectedDashboardId.value = 'fallback';
+      selectedDashboardName.value = 'Fallback Dashboard';
+      await fetchDashboardItems('fallback');
+    }
+
+    isfetchingDashboards.value = false;
   }
 
   Future<void> fetchDashboardItems(String dashboardId) async {
     isfetchingDashboardItems.value = true;
-    String username = "admin";
-    String password = "district";
-
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-    final response = await http.get(
-      Uri.parse("https://play.im.dhis2.org/dev/api/dashboards/$dashboardId.json"),
-      headers: {"Authorization": basicAuth, "Content-Type": "application/json"},
+    final dashboardList = dashboards['dashboards'] as List? ?? <dynamic>[];
+    final currentDashboard = dashboardList.cast<Map<String, dynamic>>().firstWhere(
+      (dashboard) => dashboard['id'] == dashboardId,
+      orElse: () => <String, dynamic>{},
     );
 
-    if (response.statusCode == 200) {
-      dashboardItems = jsonDecode(response.body);
-      isfetchingDashboardItems.value = false;
-      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-      print('DASHBOARD DETAILS AND ITS CONTENT HAS BEEN FETCHED');
-      print(dashboardItems);
+    if (currentDashboard.isNotEmpty) {
+      dashboardItems.value = currentDashboard;
+      selectedDashboardId.value = dashboardId;
+      selectedDashboardName.value = currentDashboard['name']?.toString() ?? '';
+      visualizations.value = List<Map<String, dynamic>>.from((currentDashboard['visualizations'] ?? []).cast<Map<String, dynamic>>());
     } else {
-      print("Failed: ${response.statusCode}");
-      isfetchingDashboardItems.value = false;
+      dashboardItems.value = <String, dynamic>{};
+      visualizations.clear();
     }
+
+    isfetchingDashboardItems.value = false;
   }
 
-  Future<void> fetchVisualizationDetails(String visualizationId) async {
-    isfetchingDashboardItems.value = true;
-    String username = "admin";
-    String password = "district";
-    final url = Uri.parse("https://play.im.dhis2.org/dev/api/$visualizationId");
+  Future<Map<String, dynamic>> fetchVisualizationDetails(String visualizationId) async {
+    final match = visualizations.firstWhere((visualization) => visualization['id'] == visualizationId, orElse: () => <String, dynamic>{});
 
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-    final response = await http.get(url, headers: {"Authorization": basicAuth, "Content-Type": "application/json"});
-    if (response.statusCode == 200) {
-      visualizationDetails = jsonDecode(response.body);
-
-      print("Visualization Item detail: $visualizationDetails");
-      isfetchingDashboardItems.value = false;
-      return visualizationDetails;
-    } else {
-      print("Failed: ${response.statusCode}");
-      isfetchingDashboardItems.value = false;
+    if (match.isNotEmpty) {
+      visualizationDetails.value = match;
+      return match;
     }
+
+    return <String, dynamic>{};
   }
-
-  // ********************************************
-
-  Future<void> loadDashboardData(String dashboardId) async {
-    final dashboard = await getDashboard(dashboardId);
-
-    final items = dashboard['dashboardItems'];
-
-    for (final item in items) {
-      if (item['visualization'] == null) {
-        continue;
-      }
-
-      final visId = item['visualization']['id'];
-
-      final visualization = await getVisualization(visId);
-
-      final analytics = await getAnalytics(visualization['href']);
-
-      dashboardVisualizations.add({'visualization': visualization, 'analytics': analytics});
-      print('**************************************************');
-      print('Dashboard Visualizations:');
-      Get.dialog(
-        AlertDialog(
-        title: Text('Dashboard Visualizations'),
-        content: Text('Visualization: ${dashboardVisualizations}'),
-      ));
-      print(dashboardVisualizations);
-    }
-  }
-
-  
 }
