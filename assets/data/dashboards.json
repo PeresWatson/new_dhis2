@@ -1,0 +1,2490 @@
+{
+    "version": "1.0",
+    "generatedAt": "2026-07-09T00:00:00Z",
+    "organization": {
+        "id": "org-sierra-leone",
+        "name": "Ministry of Health",
+        "country": "Sierra Leone",
+        "timezone": "Africa/Freetown"
+    },
+    "dashboards": [
+        {
+            "id": "ANC01",
+            "code": "ANC-DASH",
+            "name": "ANC Dashboard",
+            "description": "Antenatal care coverage and service utilization dashboard.",
+            "icon": "pregnant_woman",
+            "color": "#1F6FEB",
+            "category": "Maternal Health",
+            "createdAt": "2025-01-10T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "Director Maternal Health",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "ANCV01",
+                    "dashboardId": "ANC01",
+                    "title": "ANC Coverage Trend",
+                    "description": "Monthly ANC first visit coverage trend across districts.",
+                    "indicatorCode": "ANC1COV",
+                    "indicatorName": "ANC 1 Coverage",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "coverage",
+                        "trend",
+                        "maternal"
+                    ],
+                    "createdAt": "2025-01-10T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Coverage"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Coverage %",
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 78
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 81
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 79
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 84
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 86
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 88
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 90
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 87
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 89
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 91
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 93
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 95
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                 {
+                    "id": "ANCV01",
+                    "dashboardId": "ANC01",
+                    "title": "ANC Coverage Trend",
+                    "description": "Monthly ANC first visit coverage trend across districts.",
+                    "indicatorCode": "ANC1COV",
+                    "indicatorName": "ANC 1 Coverage",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "coverage",
+                        "trend",
+                        "maternal"
+                    ],
+                    "createdAt": "2025-01-10T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Coverage"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Coverage %",
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 78
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 81
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 79
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 84
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 86
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 88
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 90
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 87
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 89
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 91
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 93
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 95
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ANCV02",
+                    "dashboardId": "ANC01",
+                    "title": "District Coverage Comparison",
+                    "description": "District comparison for ANC coverage by quarter.",
+                    "indicatorCode": "ANC1DIST",
+                    "indicatorName": "ANC 1 by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-01-10T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    82,
+                                    76,
+                                    88,
+                                    79,
+                                    84
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ANCV03",
+                    "dashboardId": "ANC01",
+                    "title": "Gender Distribution",
+                    "description": "Share of ANC clients by gender categories.",
+                    "indicatorCode": "ANCGEND",
+                    "indicatorName": "ANC Client Gender",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "demography",
+                        "distribution",
+                        "gender"
+                    ],
+                    "createdAt": "2025-01-10T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "Female",
+                                "value": 56
+                            },
+                            {
+                                "name": "Male",
+                                "value": 44
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "ANCV04",
+                    "dashboardId": "ANC01",
+                    "title": "ANC KPI Snapshot",
+                    "description": "Current ANC coverage KPI card.",
+                    "indicatorCode": "ANCKPI",
+                    "indicatorName": "ANC Coverage KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "snapshot",
+                        "performance"
+                    ],
+                    "createdAt": "2025-01-10T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 87.5,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 82.1,
+                        "target": 90
+                    }
+                },
+                {
+                    "id": "ANCV05",
+                    "dashboardId": "ANC01",
+                    "title": "ANC Pivot Table",
+                    "description": "District by month pivot table view.",
+                    "indicatorCode": "ANCPIV",
+                    "indicatorName": "ANC Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-01-10T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                84,
+                                86,
+                                88,
+                                90
+                            ],
+                            [
+                                76,
+                                77,
+                                79,
+                                81
+                            ],
+                            [
+                                82,
+                                83,
+                                85,
+                                87
+                            ],
+                            [
+                                78,
+                                80,
+                                81,
+                                83
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "ANCV06",
+                    "dashboardId": "ANC01",
+                    "title": "ANC Geographic Heatmap",
+                    "description": "District-level ANC coverage map.",
+                    "indicatorCode": "ANCMAP",
+                    "indicatorName": "ANC Geographic Coverage",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-01-10T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/ANCV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 91
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 84
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 87
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 88
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 86
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "MAL01",
+            "code": "MAL-DASH",
+            "name": "Malaria Dashboard",
+            "description": "Malaria case management and treatment dashboard.",
+            "icon": "bug_report",
+            "color": "#2E8B57",
+            "category": "Disease Control",
+            "createdAt": "2025-01-15T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "Vector Control Lead",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "MALV01",
+                    "dashboardId": "MAL01",
+                    "title": "Malaria Cases Trend",
+                    "description": "Monthly malaria incidence trend.",
+                    "indicatorCode": "MALCASE",
+                    "indicatorName": "Malaria Cases",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "malaria",
+                        "trend",
+                        "cases"
+                    ],
+                    "createdAt": "2025-01-15T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Cases"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Cases",
+                        "series": [
+                            {
+                                "name": "Cases",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 1200
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 1180
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 1250
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 1320
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 1290
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 1340
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 1280
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 1260
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 1210
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 1170
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 1230
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 1190
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MALV02",
+                    "dashboardId": "MAL01",
+                    "title": "District Case Comparison",
+                    "description": "District comparison for malaria burden.",
+                    "indicatorCode": "MALDIST",
+                    "indicatorName": "Malaria Cases by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-01-15T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Cases",
+                                "data": [
+                                    142,
+                                    125,
+                                    138,
+                                    133,
+                                    119
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MALV03",
+                    "dashboardId": "MAL01",
+                    "title": "Treatment Outcome Breakdown",
+                    "description": "Malaria treatment outcome categories.",
+                    "indicatorCode": "MALTREAT",
+                    "indicatorName": "Treatment Outcomes",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "outcomes",
+                        "treatment",
+                        "distribution"
+                    ],
+                    "createdAt": "2025-01-15T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "Treated",
+                                "value": 64
+                            },
+                            {
+                                "name": "Pending",
+                                "value": 18
+                            },
+                            {
+                                "name": "Referred",
+                                "value": 18
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MALV04",
+                    "dashboardId": "MAL01",
+                    "title": "Case Management KPI",
+                    "description": "Current malaria management KPI.",
+                    "indicatorCode": "MALKPI",
+                    "indicatorName": "Malaria Management KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "management",
+                        "status"
+                    ],
+                    "createdAt": "2025-01-15T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 84.2,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 78.9,
+                        "target": 90
+                    }
+                },
+                {
+                    "id": "MALV05",
+                    "dashboardId": "MAL01",
+                    "title": "Malaria Pivot Table",
+                    "description": "District by month pivot table for malaria data.",
+                    "indicatorCode": "MALPIV",
+                    "indicatorName": "Malaria Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-01-15T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                118,
+                                124,
+                                128,
+                                136
+                            ],
+                            [
+                                110,
+                                113,
+                                122,
+                                128
+                            ],
+                            [
+                                114,
+                                117,
+                                125,
+                                132
+                            ],
+                            [
+                                104,
+                                108,
+                                112,
+                                119
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "MALV06",
+                    "dashboardId": "MAL01",
+                    "title": "Malaria Geographic Map",
+                    "description": "District-level malaria burden map.",
+                    "indicatorCode": "MALMAP",
+                    "indicatorName": "Malaria Geographic Burden",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-01-15T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MALV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 142
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 125
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 138
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 133
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 119
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "HIV01",
+            "code": "HIV-DASH",
+            "name": "HIV/AIDS Dashboard",
+            "description": "HIV testing and treatment adherence dashboard.",
+            "icon": "biotech",
+            "color": "#8E24AA",
+            "category": "Infectious Diseases",
+            "createdAt": "2025-02-05T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "HIV Program Manager",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "HIVV01",
+                    "dashboardId": "HIV01",
+                    "title": "HIV Testing Trend",
+                    "description": "Monthly HIV testing trend.",
+                    "indicatorCode": "HIVTEST",
+                    "indicatorName": "HIV Testing",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "hiv",
+                        "testing",
+                        "trend"
+                    ],
+                    "createdAt": "2025-02-05T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Testing"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Tests",
+                        "series": [
+                            {
+                                "name": "Tests",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 540
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 560
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 575
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 590
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 610
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 625
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 635
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 650
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 660
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 670
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 680
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 690
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "HIVV02",
+                    "dashboardId": "HIV01",
+                    "title": "District Testing Comparison",
+                    "description": "District comparison for HIV testing volume.",
+                    "indicatorCode": "HIVDIST",
+                    "indicatorName": "HIV Testing by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-02-05T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Tests",
+                                "data": [
+                                    540,
+                                    490,
+                                    510,
+                                    530,
+                                    470
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "HIVV03",
+                    "dashboardId": "HIV01",
+                    "title": "Treatment Status Breakdown",
+                    "description": "Distribution of HIV treatment categories.",
+                    "indicatorCode": "HIVSTAT",
+                    "indicatorName": "Treatment Status",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "status",
+                        "distribution",
+                        "treatment"
+                    ],
+                    "createdAt": "2025-02-05T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "On Treatment",
+                                "value": 72
+                            },
+                            {
+                                "name": "Lost to Follow-up",
+                                "value": 14
+                            },
+                            {
+                                "name": "Transferred",
+                                "value": 14
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "HIVV04",
+                    "dashboardId": "HIV01",
+                    "title": "Treatment Adherence KPI",
+                    "description": "Current HIV treatment adherence KPI.",
+                    "indicatorCode": "HIVKPI",
+                    "indicatorName": "Treatment Adherence KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "adherence",
+                        "status"
+                    ],
+                    "createdAt": "2025-02-05T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 91.4,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 87.3,
+                        "target": 95
+                    }
+                },
+                {
+                    "id": "HIVV05",
+                    "dashboardId": "HIV01",
+                    "title": "HIV Pivot Table",
+                    "description": "District by month pivot table for HIV testing.",
+                    "indicatorCode": "HIVPIV",
+                    "indicatorName": "HIV Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-02-05T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                520,
+                                531,
+                                540,
+                                547
+                            ],
+                            [
+                                470,
+                                482,
+                                490,
+                                497
+                            ],
+                            [
+                                500,
+                                509,
+                                515,
+                                523
+                            ],
+                            [
+                                510,
+                                520,
+                                528,
+                                535
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "HIVV06",
+                    "dashboardId": "HIV01",
+                    "title": "HIV Geographic Map",
+                    "description": "District-level HIV screening coverage map.",
+                    "indicatorCode": "HIVMAP",
+                    "indicatorName": "HIV Geographic Coverage",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-02-05T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/HIVV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 92
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 86
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 88
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 90
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 84
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "IMM01",
+            "code": "IMM-DASH",
+            "name": "Immunization Dashboard",
+            "description": "Child immunization coverage and outreach dashboard.",
+            "icon": "vaccines",
+            "color": "#F59E0B",
+            "category": "Preventive Care",
+            "createdAt": "2025-03-10T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "Immunization Officer",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "IMMV01",
+                    "dashboardId": "IMM01",
+                    "title": "Immunization Coverage Trend",
+                    "description": "Monthly immunization coverage trend.",
+                    "indicatorCode": "IMMCCOV",
+                    "indicatorName": "Immunization Coverage",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "immunization",
+                        "coverage",
+                        "trend"
+                    ],
+                    "createdAt": "2025-03-10T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Coverage"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Coverage %",
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 74
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 76
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 79
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 81
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 83
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 85
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 87
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 88
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 89
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 90
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 92
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 94
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "IMMV02",
+                    "dashboardId": "IMM01",
+                    "title": "District Immunization Comparison",
+                    "description": "District comparison for immunization coverage.",
+                    "indicatorCode": "IMMDIST",
+                    "indicatorName": "Immunization by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-03-10T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    81,
+                                    79,
+                                    85,
+                                    83,
+                                    80
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "IMMV03",
+                    "dashboardId": "IMM01",
+                    "title": "Vaccine Type Distribution",
+                    "description": "Distribution of vaccines delivered.",
+                    "indicatorCode": "IMMVACC",
+                    "indicatorName": "Vaccine Types",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "distribution",
+                        "vaccines",
+                        "category"
+                    ],
+                    "createdAt": "2025-03-10T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "BCG",
+                                "value": 28
+                            },
+                            {
+                                "name": "Penta",
+                                "value": 32
+                            },
+                            {
+                                "name": "Measles",
+                                "value": 40
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "IMMV04",
+                    "dashboardId": "IMM01",
+                    "title": "Immunization KPI",
+                    "description": "Current immunization performance KPI.",
+                    "indicatorCode": "IMMKPI",
+                    "indicatorName": "Immunization KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "performance",
+                        "coverage"
+                    ],
+                    "createdAt": "2025-03-10T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 89.7,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 85.4,
+                        "target": 95
+                    }
+                },
+                {
+                    "id": "IMMV05",
+                    "dashboardId": "IMM01",
+                    "title": "Immunization Pivot Table",
+                    "description": "District by month pivot table for immunization coverage.",
+                    "indicatorCode": "IMMPIV",
+                    "indicatorName": "Immunization Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-03-10T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                80,
+                                81,
+                                84,
+                                86
+                            ],
+                            [
+                                78,
+                                79,
+                                81,
+                                83
+                            ],
+                            [
+                                82,
+                                83,
+                                85,
+                                87
+                            ],
+                            [
+                                79,
+                                80,
+                                82,
+                                84
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "IMMV06",
+                    "dashboardId": "IMM01",
+                    "title": "Immunization Geographic Map",
+                    "description": "District-level immunization coverage map.",
+                    "indicatorCode": "IMMMAP",
+                    "indicatorName": "Immunization Geographic Coverage",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-03-10T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/IMMV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 90
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 87
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 89
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 88
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 85
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "MAT01",
+            "code": "MAT-DASH",
+            "name": "Maternal Health Dashboard",
+            "description": "Maternal health service quality and outcomes dashboard.",
+            "icon": "family_restroom",
+            "color": "#E11D48",
+            "category": "Maternal Health",
+            "createdAt": "2025-04-02T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "Safe Motherhood Lead",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "MATV01",
+                    "dashboardId": "MAT01",
+                    "title": "Delivery Coverage Trend",
+                    "description": "Monthly skilled delivery coverage trend.",
+                    "indicatorCode": "MATDEL",
+                    "indicatorName": "Skilled Delivery",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "delivery",
+                        "coverage",
+                        "trend"
+                    ],
+                    "createdAt": "2025-04-02T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Coverage"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Coverage %",
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 70
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 72
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 74
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 76
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 77
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 78
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 80
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 82
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 84
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 85
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 86
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 88
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MATV02",
+                    "dashboardId": "MAT01",
+                    "title": "District Delivery Comparison",
+                    "description": "District comparison for skilled deliveries.",
+                    "indicatorCode": "MATDIST",
+                    "indicatorName": "Skilled Delivery by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-04-02T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Coverage",
+                                "data": [
+                                    75,
+                                    72,
+                                    78,
+                                    76,
+                                    74
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MATV03",
+                    "dashboardId": "MAT01",
+                    "title": "Delivery Outcome Breakdown",
+                    "description": "Distribution of delivery outcomes.",
+                    "indicatorCode": "MATOUT",
+                    "indicatorName": "Delivery Outcomes",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "outcomes",
+                        "distribution",
+                        "delivery"
+                    ],
+                    "createdAt": "2025-04-02T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "Skilled Delivery",
+                                "value": 64
+                            },
+                            {
+                                "name": "Home Delivery",
+                                "value": 22
+                            },
+                            {
+                                "name": "Referral",
+                                "value": 14
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "MATV04",
+                    "dashboardId": "MAT01",
+                    "title": "Maternal KPI",
+                    "description": "Current maternal health KPI.",
+                    "indicatorCode": "MATKPI",
+                    "indicatorName": "Maternal Health KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "maternal",
+                        "status"
+                    ],
+                    "createdAt": "2025-04-02T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 86.3,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 81.2,
+                        "target": 90
+                    }
+                },
+                {
+                    "id": "MATV05",
+                    "dashboardId": "MAT01",
+                    "title": "Maternal Pivot Table",
+                    "description": "District by month pivot table for maternal health.",
+                    "indicatorCode": "MATPIV",
+                    "indicatorName": "Maternal Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-04-02T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                72,
+                                73,
+                                74,
+                                76
+                            ],
+                            [
+                                69,
+                                70,
+                                72,
+                                74
+                            ],
+                            [
+                                70,
+                                72,
+                                75,
+                                77
+                            ],
+                            [
+                                71,
+                                72,
+                                74,
+                                75
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "MATV06",
+                    "dashboardId": "MAT01",
+                    "title": "Maternal Geographic Map",
+                    "description": "District-level maternal health coverage map.",
+                    "indicatorCode": "MATMAP",
+                    "indicatorName": "Maternal Geographic Coverage",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-04-02T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/MATV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 88
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 82
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 85
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 84
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 81
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "id": "DIS01",
+            "code": "DIS-DASH",
+            "name": "Disease Surveillance Dashboard",
+            "description": "Disease monitoring and outbreak surveillance dashboard.",
+            "icon": "coronavirus",
+            "color": "#DC2626",
+            "category": "Surveillance",
+            "createdAt": "2025-05-15T08:30:00Z",
+            "updatedAt": "2026-07-01T12:00:00Z",
+            "owner": "Epidemiology Lead",
+            "visualizationCount": 6,
+            "visualizations": [
+                {
+                    "id": "DISV01",
+                    "dashboardId": "DIS01",
+                    "title": "Surveillance Trend",
+                    "description": "Monthly disease surveillance trend.",
+                    "indicatorCode": "DISSURV",
+                    "indicatorName": "Surveillance Cases",
+                    "defaultRenderType": "line",
+                    "availableRenderTypes": [
+                        "line",
+                        "bar",
+                        "table"
+                    ],
+                    "tags": [
+                        "surveillance",
+                        "trend",
+                        "disease"
+                    ],
+                    "createdAt": "2025-05-15T08:35:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Cases"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV01/details"
+                    },
+                    "data": {
+                        "type": "line",
+                        "xAxisLabel": "Month",
+                        "yAxisLabel": "Cases",
+                        "series": [
+                            {
+                                "name": "Cases",
+                                "data": [
+                                    {
+                                        "label": "Jan",
+                                        "value": 980
+                                    },
+                                    {
+                                        "label": "Feb",
+                                        "value": 940
+                                    },
+                                    {
+                                        "label": "Mar",
+                                        "value": 1020
+                                    },
+                                    {
+                                        "label": "Apr",
+                                        "value": 1080
+                                    },
+                                    {
+                                        "label": "May",
+                                        "value": 1120
+                                    },
+                                    {
+                                        "label": "Jun",
+                                        "value": 1160
+                                    },
+                                    {
+                                        "label": "Jul",
+                                        "value": 1080
+                                    },
+                                    {
+                                        "label": "Aug",
+                                        "value": 1030
+                                    },
+                                    {
+                                        "label": "Sep",
+                                        "value": 1090
+                                    },
+                                    {
+                                        "label": "Oct",
+                                        "value": 1140
+                                    },
+                                    {
+                                        "label": "Nov",
+                                        "value": 1180
+                                    },
+                                    {
+                                        "label": "Dec",
+                                        "value": 1210
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "DISV02",
+                    "dashboardId": "DIS01",
+                    "title": "District Surveillance Comparison",
+                    "description": "District comparison for surveillance activity.",
+                    "indicatorCode": "DISDIST",
+                    "indicatorName": "Surveillance by District",
+                    "defaultRenderType": "bar",
+                    "availableRenderTypes": [
+                        "bar",
+                        "table",
+                        "pie"
+                    ],
+                    "tags": [
+                        "district",
+                        "comparison",
+                        "bar"
+                    ],
+                    "createdAt": "2025-05-15T08:36:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "QUARTERLY",
+                        "indicatorType": "Comparison"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV02/details"
+                    },
+                    "data": {
+                        "type": "bar",
+                        "categories": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba",
+                            "Koinadugu"
+                        ],
+                        "series": [
+                            {
+                                "name": "Cases",
+                                "data": [
+                                    130,
+                                    118,
+                                    124,
+                                    121,
+                                    115
+                                ]
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "DISV03",
+                    "dashboardId": "DIS01",
+                    "title": "Case Category Breakdown",
+                    "description": "Breakdown of surveillance case categories.",
+                    "indicatorCode": "DISCAT",
+                    "indicatorName": "Category Breakdown",
+                    "defaultRenderType": "pie",
+                    "availableRenderTypes": [
+                        "pie",
+                        "table"
+                    ],
+                    "tags": [
+                        "classification",
+                        "distribution",
+                        "cases"
+                    ],
+                    "createdAt": "2025-05-15T08:37:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Distribution"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV03/details"
+                    },
+                    "data": {
+                        "type": "pie",
+                        "categories": [
+                            {
+                                "name": "Confirmed",
+                                "value": 48
+                            },
+                            {
+                                "name": "Probable",
+                                "value": 27
+                            },
+                            {
+                                "name": "Suspected",
+                                "value": 25
+                            }
+                        ]
+                    }
+                },
+                {
+                    "id": "DISV04",
+                    "dashboardId": "DIS01",
+                    "title": "Surveillance KPI",
+                    "description": "Current surveillance response KPI.",
+                    "indicatorCode": "DISKPI",
+                    "indicatorName": "Surveillance KPI",
+                    "defaultRenderType": "kpi",
+                    "availableRenderTypes": [
+                        "kpi",
+                        "table"
+                    ],
+                    "tags": [
+                        "kpi",
+                        "response",
+                        "status"
+                    ],
+                    "createdAt": "2025-05-15T08:38:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "AVERAGE",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "KPI"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV04/details"
+                    },
+                    "data": {
+                        "type": "kpi",
+                        "value": 92.8,
+                        "unit": "%",
+                        "trend": "up",
+                        "previousValue": 88.1,
+                        "target": 95
+                    }
+                },
+                {
+                    "id": "DISV05",
+                    "dashboardId": "DIS01",
+                    "title": "Surveillance Pivot Table",
+                    "description": "District by month pivot table for surveillance data.",
+                    "indicatorCode": "DISPIV",
+                    "indicatorName": "Surveillance Pivot",
+                    "defaultRenderType": "pivot",
+                    "availableRenderTypes": [
+                        "pivot",
+                        "table"
+                    ],
+                    "tags": [
+                        "pivot",
+                        "table",
+                        "district"
+                    ],
+                    "createdAt": "2025-05-15T08:39:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Pivot"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV05/details"
+                    },
+                    "data": {
+                        "type": "pivot",
+                        "columns": [
+                            "Jan",
+                            "Feb",
+                            "Mar",
+                            "Apr"
+                        ],
+                        "rows": [
+                            "Port Loko",
+                            "Kono",
+                            "Pujehun",
+                            "Moyamba"
+                        ],
+                        "data": [
+                            [
+                                118,
+                                121,
+                                124,
+                                129
+                            ],
+                            [
+                                110,
+                                112,
+                                114,
+                                119
+                            ],
+                            [
+                                113,
+                                116,
+                                118,
+                                123
+                            ],
+                            [
+                                109,
+                                111,
+                                114,
+                                117
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "id": "DISV06",
+                    "dashboardId": "DIS01",
+                    "title": "Surveillance Geographic Map",
+                    "description": "District-level surveillance intensity map.",
+                    "indicatorCode": "DISMAP",
+                    "indicatorName": "Surveillance Geographic Intensity",
+                    "defaultRenderType": "map",
+                    "availableRenderTypes": [
+                        "map",
+                        "table"
+                    ],
+                    "tags": [
+                        "map",
+                        "geography",
+                        "district"
+                    ],
+                    "createdAt": "2025-05-15T08:40:00Z",
+                    "updatedAt": "2026-07-01T12:00:00Z",
+                    "allowDrillDown": true,
+                    "favorite": false,
+                    "metadata": {
+                        "lastRefresh": "2026-07-01T12:00:00Z",
+                        "dataSource": "Simulated DHIS2",
+                        "aggregationType": "SUM",
+                        "periodType": "MONTHLY",
+                        "indicatorType": "Map"
+                    },
+                    "drillDown": {
+                        "enabled": true,
+                        "endpoint": "/api/visualizations/DISV06/details"
+                    },
+                    "data": {
+                        "type": "map",
+                        "layers": [
+                            {
+                                "district": "Port Loko",
+                                "latitude": 8.7667,
+                                "longitude": -12.7833,
+                                "value": 125
+                            },
+                            {
+                                "district": "Kono",
+                                "latitude": 8.6833,
+                                "longitude": -10.9667,
+                                "value": 118
+                            },
+                            {
+                                "district": "Pujehun",
+                                "latitude": 7.35,
+                                "longitude": -11.7167,
+                                "value": 124
+                            },
+                            {
+                                "district": "Moyamba",
+                                "latitude": 8.1667,
+                                "longitude": -12.4333,
+                                "value": 121
+                            },
+                            {
+                                "district": "Koinadugu",
+                                "latitude": 9.4167,
+                                "longitude": -11.4333,
+                                "value": 115
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

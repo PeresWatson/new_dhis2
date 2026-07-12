@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'package:dhis_2/common/widgets/network_banner.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
-import 'package:dhis_2/screens/navigation/navigation_menu.dart';
+import 'package:dhis_2/utils/charts/barChartWidget.dart';
+import 'package:dhis_2/utils/charts/kpiWidget.dart';
+import 'package:dhis_2/utils/charts/lineChartWidget.dart';
+import 'package:dhis_2/utils/charts/mapVisualizationWidget.dart';
+import 'package:dhis_2/utils/charts/pieChartWidget.dart';
+import 'package:dhis_2/utils/charts/pivotTableWidget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -23,7 +27,8 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    homecontroller.fetchDashboards();
+    // homecontroller.fetchDashboards();
+    homecontroller.fetchSimulatedData();
 
     return Obx(
       () => Scaffold(
@@ -43,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                     const SizedBox(width: 10),
 
                     Text(
-                      "DHIS2 - ${Get.find<NavigationController>().currentUser.value?.name ?? 'User'}",
+                      "DHIS2 - ${homecontroller.simulatedDashboards["organization"]['name'] ?? 'User'}",
                       style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.w600),
                     ),
 
@@ -55,8 +60,8 @@ class HomeScreen extends StatelessWidget {
                         radius: 12,
                         backgroundColor: const Color.fromARGB(255, 82, 70, 117),
                         child: Text(
-                          Get.find<NavigationController>().currentUser.value?.name != null
-                              ? "${Get.find<NavigationController>().currentUser.value?.name?[0].toUpperCase()}"
+                          homecontroller.simulatedDashboards != null
+                              ? "${homecontroller.simulatedDashboards["organization"]['country'][0].toUpperCase()}"
                               : "U",
                           style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
                         ),
@@ -94,7 +99,7 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(width: 20),
 
                       Text(
-                        "${homecontroller.selectedDashboardName.value.isEmpty ? 'Select Dashboard' : homecontroller.selectedDashboardName.value} ",
+                        "${homecontroller.selectedDashboard.isEmpty ? 'Select Dashboard' : homecontroller.selectedDashboard['name']} ",
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ],
@@ -105,114 +110,44 @@ class HomeScreen extends StatelessWidget {
                 child: Container(
                   color: Colors.white,
                   width: double.infinity,
-                  child: homecontroller.isfetchingDashboardItems.value
+                  child:
+                      (
+                      // homecontroller.selectedDashboard['visualizations'].isEmpty ||
+                      homecontroller.selectedDashboard == null)
                       ? Center(child: CircularProgressIndicator())
                       : SingleChildScrollView(
                           child: Builder(
                             builder: (_) {
-                              final items = List<Map<String, dynamic>>.from(homecontroller.dashboardItems['dashboardItems'] ?? []);
-
-                              // Sort exactly like DHIS2 dashboard layout
-                              items.sort((a, b) {
-                                final ay = a['y'] ?? 0;
-                                final by = b['y'] ?? 0;
-                                if (ay != by) return ay.compareTo(by);
-
-                                final ax = a['x'] ?? 0;
-                                final bx = b['x'] ?? 0;
-                                return ax.compareTo(bx);
-                              });
+                              final items = List<Map<String, dynamic>>.from(homecontroller.selectedDashboard['visualizations'] ?? []);
                               return Column(
-                                children: [
-                                  for (var item in items)
-                                    if (item['type'] == 'TEXT')
-                                      Container(
-                                        width: double.infinity,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: Colors.grey[300]!),
-                                        ),
-                                        child: Markdown(
-                                          data: item['displayText'] ?? '',
-                                          shrinkWrap: true,
-                                          physics: const NeverScrollableScrollPhysics(),
-                                        ),
-                                      )
-                                    else if (item['type'] == 'MAP' || item['type'] == 'VISUALIZATION')
-                                      Container(
-                                        width: double.infinity,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                        padding: const EdgeInsets.all(12),
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.circular(8),
-                                          border: Border.all(color: Colors.grey[300]!),
-                                        ),
-                                        child: Column(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(item['type'], style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                                                const SizedBox(height: 12),
-                                                Container(
-                                                  height: 200,
-                                                  width: double.infinity,
-                                                  padding: const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(color: Colors.grey.shade100, borderRadius: BorderRadius.circular(8)),
-                                                  child: Image(
-                                                    image: NetworkImage(
-                                                      'https://play.im.dhis2.org/dev/api/${(item['type'] as String).toLowerCase()}s/${item[(item['type'] as String).toLowerCase()]['id']}/data',
-                                                      headers: {'Authorization': 'Basic ${base64Encode(utf8.encode('admin:district'))}'},
-                                                    ),
-                                                    // Makes sure the entire chart/map visualization fits legibly within the frame without stretching
-                                                    fit: BoxFit.contain,
+                                children: items.map((item) {
+                                  final type = item['defaultRenderType']?.toString().toLowerCase();
 
-                                                    // Individual loader setup
-                                                    loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                                                      if (loadingProgress == null) return child; // Image finished loading, display it
+                                  if (type == 'line') {
+                                    return LineChartWidget(item: item);
+                                  } else if (type == 'bar') {
+                                    return BarChartWidget(item: item);
+                                  } else if (type == 'pie') {
+                                    return PieChartWidget(item: item);
+                                  } else if (type == 'kpi') {
+                                    return KPIWidget(item: item);
+                                  } else if (type == 'pivot') {
+                                    return PivotTableWidget(item: item);
+                                  } else if (type == 'map') {
+                                    return MapVisualizationWidget(item: item);
+                                  }
+                                  return const SizedBox.shrink();
+                                }).toList(),
 
-                                                      return Center(
-                                                        child: CircularProgressIndicator(
-                                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.blue[800]!),
-                                                          // Optional: Display download percentage if server provides headers
-                                                          value: loadingProgress.expectedTotalBytes != null
-                                                              ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                                                              : null,
-                                                        ),
-                                                      );
-                                                    },
-                                                    errorBuilder: (context, error, stackTrace) {
-                                                      final typeKey = (item['type'] as String).toLowerCase();
-                                                      print('Failed URL: https://play.im.dhis2.org/dev/api/${typeKey}s/${item[typeKey]['id']}/data');
-                                                      return const Center(
-                                                        child: Column(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          children: [
-                                                            Icon(Icons.broken_image, color: Colors.grey, size: 32),
-                                                            SizedBox(height: 4),
-                                                            Text('Visualization missing', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                                                          ],
-                                                        ),
-                                                      );
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                ],
+
+                                
                               );
                             },
                           ),
                         ),
                 ),
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),
@@ -273,10 +208,10 @@ class HomeScreen extends StatelessWidget {
                             isDense: true,
                           ),
                           onChanged: (value) {
-                            final all = homecontroller.dashboards['dashboards'] ?? [];
+                            final all = homecontroller.simulatedDashboards['dashboards'] ?? [];
 
                             filteredDashboards.value = (all as List)
-                                .where((d) => (d['displayName'] ?? '').toString().toLowerCase().contains(value.toLowerCase()))
+                                .where((d) => (d['name'] ?? '').toString().toLowerCase().contains(value.toLowerCase()))
                                 .toList();
                           },
                         ),
@@ -289,16 +224,21 @@ class HomeScreen extends StatelessWidget {
                             height: 300,
                             child: (!homecontroller.isfetchingDashboards.value)
                                 ? ListView.builder(
-                                    itemCount: filteredDashboards.length,
+                                    itemCount: homecontroller.simulatedDashboards['dashboards'].length,
                                     itemBuilder: (context, index) {
-                                      final dashboard = filteredDashboards[index];
+                                      final dashboard = homecontroller.simulatedDashboards['dashboards'][index];
+                                      homecontroller.selectedDashboardIndex = index;
 
                                       return ListTile(
-                                        title: Text(dashboard['displayName'] ?? ''),
-                                        onTap: () {  hideDropdown();
-                                          homecontroller.selectedDashboardId.value = dashboard['id'] ?? '';
-                                          homecontroller.selectedDashboardName.value = dashboard['displayName'] ?? '';
-                                          homecontroller.fetchDashboardItems(dashboard['id'] ?? '');
+                                        title: Text(dashboard['name'] ?? ''),
+                                        onTap: () {
+                                          hideDropdown();
+                                          homecontroller.selectedDashboard = homecontroller.simulatedDashboards['dashboards'][index];
+                                          print("***************************************************");
+                                          print("Simulated Dashboards: ${homecontroller.selectedDashboard['name']}");
+
+                                          // homecontroller.selectedDashboardId.value = dashboard['id'] ?? '';
+                                          // homecontroller.fetchDashboardItems(dashboard['id'] ?? '');
                                           // homecontroller.loadDashboardData( dashboard['id'] ?? '');
                                         },
                                       );

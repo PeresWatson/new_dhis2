@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import 'dart:convert';
@@ -6,6 +7,10 @@ import 'package:http/http.dart' as http;
 
 class HomeController extends GetxController {
   var dashboards = jsonDecode('{}');
+  var simulatedDashboards = jsonDecode('{}');
+  var selectedDashboardIndex = 0;
+  var selectedVisualizationIndex = 0;
+  var selectedDashboard = jsonDecode('{}');
   var dashboardItems = jsonDecode('{}');
 
   final dashboardVisualizations = <Map<String, dynamic>>[].obs;
@@ -55,7 +60,6 @@ class HomeController extends GetxController {
 
     throw Exception("Failed to load analytics");
   }
-
 
   Future<void> fetchDashboards() async {
     isfetchingDashboards.value = true;
@@ -146,14 +150,28 @@ class HomeController extends GetxController {
       dashboardVisualizations.add({'visualization': visualization, 'analytics': analytics});
       print('**************************************************');
       print('Dashboard Visualizations:');
-      Get.dialog(
-        AlertDialog(
-        title: Text('Dashboard Visualizations'),
-        content: Text('Visualization: ${dashboardVisualizations}'),
-      ));
+      Get.dialog(AlertDialog(title: Text('Dashboard Visualizations'), content: Text('Visualization: $dashboardVisualizations')));
       print(dashboardVisualizations);
     }
   }
 
-  
+  // FETCHING SIMULATED DATA FROM ASSETS FOLDER
+  Future<void> fetchSimulatedData() async {
+    isfetchingDashboards.value = true;
+    try {
+      // 1. Read the file directly from your local assets bundle
+      final String responseBody = await rootBundle.loadString('assets/data/dashboards.json');
+
+      // 2. Decode the string data into your variable
+      simulatedDashboards = jsonDecode(responseBody);
+
+      isfetchingDashboards.value = false;
+
+    } catch (e) {
+      print("Error fetching simulated dashboards: $e");
+      isfetchingDashboards.value = false;
+    } finally {
+      isfetchingDashboards.value = false;
+    }
+  }
 }

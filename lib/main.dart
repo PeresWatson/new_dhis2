@@ -9,13 +9,18 @@ import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:dhis_2/utils/network_controller.dart';
 import 'package:dhis_2/utils/network_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  
   initializeReflectable();
   final prefs = await SharedPreferences.getInstance();
   // Initialize d2_touch at app start
