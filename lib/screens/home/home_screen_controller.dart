@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
@@ -17,6 +16,7 @@ class HomeController extends GetxController {
   final String baseUrl = "https://play.im.dhis2.org/dev";
   final String username = "admin";
   final String password = "district";
+
   Map<String, String> get headers => {
     "Authorization": "Basic ${base64Encode(utf8.encode('$username:$password'))}",
     "Content-Type": "application/json",
@@ -39,28 +39,7 @@ class HomeController extends GetxController {
     throw Exception("Failed to load dashboard");
   }
 
-  // ***********************Fetching visualization details by its id************************************
-  Future<Map<String, dynamic>> getVisualization(String visualizationId) async {
-    final response = await http.get(Uri.parse("$baseUrl/api/visualizations/$visualizationId.json"), headers: headers);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    throw Exception("Failed to load visualization");
-  }
-
-  // ***********************Fetching analytics details by its url************************************
-  Future<Map<String, dynamic>> getAnalytics(String url) async {
-    final response = await http.get(Uri.parse(url), headers: headers);
-
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    }
-
-    throw Exception("Failed to load analytics");
-  }
-
+  
   Future<void> fetchDashboards() async {
     isfetchingDashboards.value = true;
     String username = "admin";
@@ -84,30 +63,6 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> fetchDashboardItems(String dashboardId) async {
-    isfetchingDashboardItems.value = true;
-    String username = "admin";
-    String password = "district";
-
-    String basicAuth = 'Basic ${base64Encode(utf8.encode('$username:$password'))}';
-
-    final response = await http.get(
-      Uri.parse("https://play.im.dhis2.org/dev/api/dashboards/$dashboardId.json"),
-      headers: {"Authorization": basicAuth, "Content-Type": "application/json"},
-    );
-
-    if (response.statusCode == 200) {
-      dashboardItems = jsonDecode(response.body);
-      isfetchingDashboardItems.value = false;
-      print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-      print('DASHBOARD DETAILS AND ITS CONTENT HAS BEEN FETCHED');
-      print(dashboardItems);
-    } else {
-      print("Failed: ${response.statusCode}");
-      isfetchingDashboardItems.value = false;
-    }
-  }
-
   Future<void> fetchVisualizationDetails(String visualizationId) async {
     isfetchingDashboardItems.value = true;
     String username = "admin";
@@ -128,34 +83,8 @@ class HomeController extends GetxController {
       isfetchingDashboardItems.value = false;
     }
   }
-
-  // ********************************************
-
-  Future<void> loadDashboardData(String dashboardId) async {
-    final dashboard = await getDashboard(dashboardId);
-
-    final items = dashboard['dashboardItems'];
-
-    for (final item in items) {
-      if (item['visualization'] == null) {
-        continue;
-      }
-
-      final visId = item['visualization']['id'];
-
-      final visualization = await getVisualization(visId);
-
-      final analytics = await getAnalytics(visualization['href']);
-
-      dashboardVisualizations.add({'visualization': visualization, 'analytics': analytics});
-      print('**************************************************');
-      print('Dashboard Visualizations:');
-      Get.dialog(AlertDialog(title: Text('Dashboard Visualizations'), content: Text('Visualization: $dashboardVisualizations')));
-      print(dashboardVisualizations);
-    }
-  }
-
   // FETCHING SIMULATED DATA FROM ASSETS FOLDER
+
   Future<void> fetchSimulatedData() async {
     isfetchingDashboards.value = true;
     try {
@@ -166,7 +95,6 @@ class HomeController extends GetxController {
       simulatedDashboards = jsonDecode(responseBody);
 
       isfetchingDashboards.value = false;
-
     } catch (e) {
       print("Error fetching simulated dashboards: $e");
       isfetchingDashboards.value = false;

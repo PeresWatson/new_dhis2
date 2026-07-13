@@ -1,0 +1,14 @@
+ 
+storage.write('last_sync', DateTime.now().toIso8601String());
+
+storage.write('user_profile', {
+          "id": "GOLswS44mh8",
+          "username": "admin",
+          "firstName": "John",
+          "surname": "Doe",
+          "fullName": "John Doe",
+          "email": "john@example.com",
+          "country": "Sierra Leone",
+          "jobTitle": "Health Officer",
+          "serverUrl": url,
+        });

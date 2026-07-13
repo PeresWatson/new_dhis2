@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dhis_2/Notifications/app_snackbars.dart';
+import 'package:dhis_2/features/Notifications/app_snackbars.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -84,6 +84,19 @@ class LoginScreen extends StatelessWidget {
                       // Password Text Field Input
                       Obx(
                         () => TextField(
+                          onSubmitted: (value) {
+                            String username = controller.usernameController.text.trim();
+                            String password = controller.passwordController.text.trim();
+                            String url = controller.urlController.text.trim();
+
+                            if (username.isEmpty || password.isEmpty || url.isEmpty) {
+                              AppSnackbars.showError(title: controller.titleError, message: controller.errEmptyFields);
+                              return;
+                            } else {
+                              // controller.D2login(url: url, username: username, password: password);
+                              controller.login(url, username, password);
+                            }
+                          },
                           controller: controller.passwordController,
                           obscureText: controller.obscurePassword.value,
                           decoration: InputDecoration(
@@ -118,8 +131,7 @@ class LoginScreen extends StatelessWidget {
                       return;
                     } else {
                       // controller.D2login(url: url, username: username, password: password);
-                      controller.login(username,password);
-                      
+                      controller.login(url, username, password);
                     }
                   },
                   style: ElevatedButton.styleFrom(

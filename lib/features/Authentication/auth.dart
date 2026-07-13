@@ -4,8 +4,8 @@ import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-class AppStorageService extends GetxController {
-  final userStateBox = GetStorage();
+class AuthService extends GetxController {
+  final storage = GetStorage();
 
   @override
   void onReady() {
@@ -13,8 +13,8 @@ class AppStorageService extends GetxController {
   }
 
   void screenRedirect() {
-    final bool isFirstTime = userStateBox.read('isFirstTime') ?? true;
-    final bool isLoggedIn = userStateBox.read('isLoggedIn') ?? false;
+    final bool isFirstTime = storage.read('isFirstTime') ?? true;
+    final bool isLoggedIn = storage.read('isLoggedIn') ?? false;
 
     if (isFirstTime) {
       // 1. Brand new user -> Show Onboarding

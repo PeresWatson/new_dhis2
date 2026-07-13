@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:dhis_2/common/widgets/network_banner.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
-import 'package:dhis_2/utils/charts/barChartWidget.dart';
-import 'package:dhis_2/utils/charts/kpiWidget.dart';
-import 'package:dhis_2/utils/charts/lineChartWidget.dart';
-import 'package:dhis_2/utils/charts/mapVisualizationWidget.dart';
-import 'package:dhis_2/utils/charts/pieChartWidget.dart';
-import 'package:dhis_2/utils/charts/pivotTableWidget.dart';
+import 'package:dhis_2/common/utils/charts/barChartWidget.dart';
+import 'package:dhis_2/common/utils/charts/kpiWidget.dart';
+import 'package:dhis_2/common/utils/charts/lineChartWidget.dart';
+import 'package:dhis_2/common/utils/charts/mapVisualizationWidget.dart';
+import 'package:dhis_2/common/utils/charts/pieChartWidget.dart';
+import 'package:dhis_2/common/utils/charts/pivotTableWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

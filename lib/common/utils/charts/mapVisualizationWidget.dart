@@ -7,20 +7,11 @@ import 'package:latlong2/latlong.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 
 class MapVisualizationWidget extends StatelessWidget {
-   MapVisualizationWidget({super.key, required this.item});
+  MapVisualizationWidget({super.key, required this.item});
 
   final Map<String, dynamic> item;
   final MapController mapController = MapController();
-  final List<Color> _markerColors = [
-  Colors.blue,
-  Colors.orange,
-  Colors.red,
-  Colors.green,
-  Colors.purple,
-  Colors.teal,
-  Colors.indigo,
-  Colors.pink,
-];
+  final List<Color> _markerColors = [Colors.blue, Colors.orange, Colors.red, Colors.green, Colors.purple, Colors.teal, Colors.indigo, Colors.pink];
 
   @override
   Widget build(BuildContext context) {
@@ -107,169 +98,120 @@ class MapVisualizationWidget extends StatelessWidget {
           const SizedBox(height: 12),
 
           Expanded(
-  child: Column(
-    children: [
-      Expanded(
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: mapController,
-              options: MapOptions(
-                center: LatLng(
-                  layers.isNotEmpty
-                      ? layers.first['latitude']
-                      : 8.5,
-                  layers.isNotEmpty
-                      ? layers.first['longitude']
-                      : -11.5,
-                ),
-                zoom: 7,
-              ),
+            child: Column(
               children: [
-                TileLayer(
-                  urlTemplate:
-                      'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.example.dhis2',
-                ),
-
-                MarkerLayer(
-                  markers: List.generate(
-                    layers.length,
-                    (index) {
-                      final layer = layers[index];
-                      final value =
-                          (layer['value'] as num).toDouble();
-
-                      final markerColor =
-                          _markerColors[
-                              index %
-                              _markerColors.length];
-
-                      return Marker(
-                        point: LatLng(
-                          layer['latitude'],
-                          layer['longitude'],
+                Expanded(
+                  child: Stack(
+                    children: [
+                      FlutterMap(
+                        mapController: mapController,
+                        options: MapOptions(
+                          initialCenter: LatLng(
+                            layers.isNotEmpty ? layers.first['latitude'] : 8.5,
+                            layers.isNotEmpty ? layers.first['longitude'] : -11.5,
+                          ),
+                          initialZoom: 7,
                         ),
-                        width: 70,
-                        height: 70,
-                        builder: (context) => Tooltip(
-                          message:
-                              '${layer['district']}\n${value.toStringAsFixed(0)}%',
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: markerColor,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26,
-                                  blurRadius: 4,
+                        children: [
+                          TileLayer(urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', userAgentPackageName: 'com.example.dhis2'),
+
+                          MarkerLayer(
+                            markers: List.generate(layers.length, (index) {
+                              final layer = layers[index];
+                              final value = (layer['value'] as num).toDouble();
+
+                              final markerColor = _markerColors[index % _markerColors.length];
+
+                              return Marker(
+                                point: LatLng(layer['latitude'], layer['longitude']),
+                                width: 70,
+                                height: 70,
+                                child: Tooltip(
+                                  message: '${layer['district']}\n${value.toStringAsFixed(0)}%',
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: markerColor,
+                                      shape: BoxShape.circle,
+                                      boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 4)],
+                                    ),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      '${value.toStringAsFixed(0)}%',
+                                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                    ),
+                                  ),
                                 ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              '${value.toStringAsFixed(0)}%',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                              );
+                            }),
+                          ),
+                        ],
+                      ),
+
+                      Positioned(
+                        right: 12,
+                        top: 12,
+                        child: Card(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.add),
+                                onPressed: () {
+                                  mapController.move(mapController.camera.center, mapController.camera.zoom + 1);
+                                },
                               ),
-                            ),
+                              const Divider(height: 1),
+                              IconButton(
+                                icon: const Icon(Icons.remove),
+                                onPressed: () {
+                                  mapController.move(mapController.camera.center, mapController.camera.zoom - 1);
+                                },
+                              ),
+                            ],
                           ),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: Wrap(
+                    spacing: 24,
+                    runSpacing: 12,
+                    children: List.generate(layers.length, (index) {
+                      final layer = layers[index];
+
+                      final markerColor = _markerColors[index % _markerColors.length];
+
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 14,
+                            height: 14,
+                            decoration: BoxDecoration(color: markerColor, shape: BoxShape.circle),
+                          ),
+
+                          const SizedBox(width: 8),
+
+                          Text('${layer['district']} (${layer['value']}%)', style: const TextStyle(fontWeight: FontWeight.w500)),
+                        ],
                       );
-                    },
+                    }),
                   ),
                 ),
               ],
             ),
-
-            Positioned(
-              right: 12,
-              top: 12,
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: () {
-                        mapController.move(
-                          mapController.center,
-                          mapController.zoom + 1,
-                        );
-                      },
-                    ),
-                    const Divider(height: 1),
-                    IconButton(
-                      icon: const Icon(Icons.remove),
-                      onPressed: () {
-                        mapController.move(
-                          mapController.center,
-                          mapController.zoom - 1,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      const SizedBox(height: 10),
-
-      Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: Colors.grey.shade300,
           ),
-        ),
-        child: Wrap(
-          spacing: 24,
-          runSpacing: 12,
-          children: List.generate(
-            layers.length,
-            (index) {
-              final layer = layers[index];
-
-              final markerColor =
-                  _markerColors[
-                      index % _markerColors.length];
-
-              return Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 14,
-                    height: 14,
-                    decoration: BoxDecoration(
-                      color: markerColor,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-
-                  const SizedBox(width: 8),
-
-                  Text(
-                    '${layer['district']} (${layer['value']}%)',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    ],
-  ),
-)
         ],
       ),
     );
