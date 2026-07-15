@@ -1,11 +1,10 @@
+import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/features/Authentication/auth.dart';
 import 'package:dhis_2/binding/global_binding.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
-import 'package:dhis_2/common/utils/methods/network_controller.dart';
-import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/screens/setting_screen/setting_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,15 +15,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await GetStorage.init();
+  
+  Get.put(NetworkController(),permanent: true);
+  Get.put(AuthService(), permanent: true);
 
-  Get.put(() => AuthService(), permanent: true);
   // Notice permanent: true here
-  Get.lazyPut(() => NetworkManager());
-  Get.lazyPut(() => NetworkServiceController());
-  Get.lazyPut(() => LoginController());
-  Get.lazyPut(() => HomeController());
-  Get.lazyPut(() => SettingScreenController());
-  Get.lazyPut(() => NavigationController());
+  Get.lazyPut(() => LoginController(),fenix: true);
+  Get.lazyPut(() => HomeController(), fenix: true); // Notice fenix: true here
+  Get.lazyPut(() => SettingScreenController(),fenix: true);
+  Get.lazyPut(() => NavigationController(),fenix: true);
   runApp(const MyApp());
 }
 

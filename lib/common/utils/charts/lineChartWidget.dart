@@ -5,13 +5,15 @@ import 'package:get/get.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class LineChartWidget extends StatelessWidget {
-  const LineChartWidget({super.key, required this.item});
+  LineChartWidget({super.key, required this.item});
+
+  final HomeController homeController = Get.find<HomeController>();
 
   final Map<String, dynamic> item;
 
   @override
   Widget build(BuildContext context) {
-    Get.find<HomeController>().selectedVisualizationIndex = Get.find<HomeController>().dashboardVisualizations.indexOf(item);
+    homeController.selectedVisualizationIndex.value = homeController.dashboardVisualizations.indexOf(item);
 
     return Container(
       height: 400, // ← You can increase this safely now

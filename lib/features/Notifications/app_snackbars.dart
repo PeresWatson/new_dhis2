@@ -6,11 +6,7 @@ class AppSnackbars {
   AppSnackbars._();
 
   /// Displays a success message snackbar
-  static void showSuccess({
-    required String title,
-    required String message,
-    SnackPosition position = SnackPosition.BOTTOM,
-  }) {
+  static void showSuccess({required String title, required String message, SnackPosition position = SnackPosition.BOTTOM}) {
     _showCustomSnackbar(
       title: title,
       message: message,
@@ -21,11 +17,7 @@ class AppSnackbars {
   }
 
   /// Displays an error alert message snackbar
-  static void showError({
-    required String title,
-    required String message,
-    SnackPosition position = SnackPosition.BOTTOM,
-  }) {
+  static void showError({required String title, required String message, SnackPosition position = SnackPosition.BOTTOM}) {
     _showCustomSnackbar(
       title: title,
       message: message,
@@ -35,12 +27,23 @@ class AppSnackbars {
     );
   }
 
-  /// Displays an operational warning alert message snackbar
-  static void showWarning({
-    required String title,
-    required String message,
-    SnackPosition position = SnackPosition.BOTTOM,
+  /// Displays a no internet connection snackbar
+  static void showNoInternet({
+    String title = "No Internet Connection",
+    String message = "Please check your network connection and try again.",
+    SnackPosition position = SnackPosition.TOP,
   }) {
+    _showCustomSnackbar(
+      title: title,
+      message: message,
+      backgroundColor: Colors.orangeAccent.withOpacity(0.95),
+      icon: const Icon(Icons.wifi_off, color: Colors.white, size: 28),
+      position: position,
+    );
+  }
+
+  /// Displays an operational warning alert message snackbar
+  static void showWarning({required String title, required String message, SnackPosition position = SnackPosition.BOTTOM}) {
     _showCustomSnackbar(
       title: title,
       message: message,
@@ -74,14 +77,7 @@ class AppSnackbars {
       margin: const EdgeInsets.all(16),
       borderRadius: 12,
       duration: const Duration(seconds: 4),
-      boxShadows: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.15),
-          spreadRadius: 1,
-          blurRadius: 8,
-          offset: const Offset(0, 4),
-        )
-      ],
+      boxShadows: [BoxShadow(color: Colors.black.withOpacity(0.15), spreadRadius: 1, blurRadius: 8, offset: const Offset(0, 4))],
     );
   }
 }

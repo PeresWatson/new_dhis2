@@ -1,8 +1,7 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 
 class NetworkStatusBanner extends StatefulWidget {
   const NetworkStatusBanner({super.key});
@@ -12,68 +11,47 @@ class NetworkStatusBanner extends StatefulWidget {
 }
 
 class _NetworkStatusBannerState extends State<NetworkStatusBanner> {
-
-  
   bool isOnline = true;
-  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
-  Timer? _internetCheckTimer;
+
+  StreamSubscription<InternetStatus>? _subscription;
 
   @override
   void initState() {
     super.initState();
     _checkInternet();
 
-    // Listen to network changes
-    _connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
-      if (results.contains(ConnectivityResult.none)) {
-        if (mounted) setState(() => isOnline = false);
-      } else {
-        _checkInternet(); // Verify real internet
-      }
-    });
+    _subscription = InternetConnection()
+        .onStatusChange
+        .listen((InternetStatus status) {
+      if (!mounted) return;
 
-    // Periodic real internet check (important for your case)
-    _internetCheckTimer = Timer.periodic(const Duration(seconds: 10), (_) {
-      _checkInternet();
+      setState(() {
+        isOnline = status == InternetStatus.connected;
+      });
     });
   }
 
   Future<void> _checkInternet() async {
-    try {
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult.contains(ConnectivityResult.none)) {
-        if (mounted) setState(() => isOnline = false);
-        return;
-      }
+    final hasInternet =
+        await InternetConnection().hasInternetAccess;
 
-      // Real internet check
-      final result = await InternetAddress.lookup('google.com')
-          .timeout(const Duration(seconds: 5));
+    if (!mounted) return;
 
-      final hasInternet = result.isNotEmpty && result[0].rawAddress.isNotEmpty;
-
-      if (mounted) {
-        setState(() => isOnline = hasInternet);
-      }
-    } catch (_) {
-      if (mounted) {
-        setState(() => isOnline = false);
-      }
-    }
+    setState(() {
+      isOnline = hasInternet;
+    });
   }
 
   @override
   void dispose() {
-    _connectivitySubscription.cancel();
-    _internetCheckTimer?.cancel();
+    _subscription?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 100),
       width: double.infinity,
       height: 25,
       color: const Color.fromARGB(255, 2, 71, 127),

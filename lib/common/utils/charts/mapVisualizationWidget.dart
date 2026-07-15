@@ -17,7 +17,7 @@ class MapVisualizationWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
 
-    controller.selectedVisualizationIndex = controller.dashboardVisualizations.indexOf(item);
+    controller.selectedVisualizationIndex.value = controller.dashboardVisualizations.indexOf(item);
 
     final List<dynamic> layers = item['data']?['layers'] ?? [];
 

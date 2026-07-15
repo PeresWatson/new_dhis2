@@ -27,4 +27,10 @@ class AuthService extends GetxController {
       Get.offAll(() => LoginScreen());
     }
   }
+  
+  logout() {
+    storage.write('isLoggedIn', false);
+    storage.remove('user_profile');
+    Get.offAll(() => LoginScreen());
+  }
 }

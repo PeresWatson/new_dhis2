@@ -1,5 +1,6 @@
 import 'package:dhis_2/common/utils/methods/dataSize.dart';
 import 'package:dhis_2/common/utils/methods/lastTime.dart';
+import 'package:dhis_2/features/Authentication/auth.dart';
 import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/setting_screen/setting_screen_controller.dart';
@@ -323,10 +324,7 @@ class SettingsScreen extends StatelessWidget {
       color: Colors.red.shade50,
       child: GestureDetector(
         onTap: () async {
-          // Call the logout method from D2Service
-          storage.remove('user_profile');
-          Get.off(() => LoginScreen());
-          Get.find<NavigationController>().selectedScreenIndex.value = 0;
+          Get.find<AuthService>().logout();
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),

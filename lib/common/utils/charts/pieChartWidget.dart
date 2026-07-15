@@ -17,7 +17,7 @@ class PieChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
 
-    controller.selectedVisualizationIndex =
+    controller.selectedVisualizationIndex.value =
         controller.dashboardVisualizations.indexOf(item);
 
     final List<dynamic> categories =

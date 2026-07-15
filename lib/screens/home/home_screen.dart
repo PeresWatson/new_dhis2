@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final LoginController logincontroller = Get.find<LoginController>();
-  final HomeController homecontroller = Get.find<HomeController>();
+  final homecontroller = Get.find<HomeController>();
 
   final TextEditingController searchController = TextEditingController();
 
@@ -27,9 +27,6 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // homecontroller.fetchDashboards();
-    homecontroller.fetchSimulatedData();
-
     return Obx(
       () => Scaffold(
         backgroundColor: Colors.grey[200],
@@ -79,7 +76,7 @@ class HomeScreen extends StatelessWidget {
               GestureDetector(
                 key: dropdownKey,
                 onTap: () {
-                  homecontroller.fetchDashboards();
+                  homecontroller.fetchSimulatedData();
                   toggleDropdown(context);
                 },
                 child: Container(
@@ -112,9 +109,10 @@ class HomeScreen extends StatelessWidget {
                   width: double.infinity,
                   child:
                       (
-                      // homecontroller.selectedDashboard['visualizations'].isEmpty ||
-                      homecontroller.selectedDashboard == null)
-                      ? Center(child: CircularProgressIndicator())
+                      homecontroller.selectedDashboardIndex.value == (-1))
+                      ? Center(child: NoDashboardSelected(onSelectDashboard: () {
+                          toggleDropdown(context);
+                        }))
                       : SingleChildScrollView(
                           child: Builder(
                             builder: (_) {
@@ -227,19 +225,17 @@ class HomeScreen extends StatelessWidget {
                                     itemCount: homecontroller.simulatedDashboards['dashboards'].length,
                                     itemBuilder: (context, index) {
                                       final dashboard = homecontroller.simulatedDashboards['dashboards'][index];
-                                      homecontroller.selectedDashboardIndex = index;
+                                      // homecontroller.selectedDashboardIndex.value = index;
 
                                       return ListTile(
                                         title: Text(dashboard['name'] ?? ''),
                                         onTap: () {
                                           hideDropdown();
                                           homecontroller.selectedDashboard = homecontroller.simulatedDashboards['dashboards'][index];
+                                          homecontroller.selectedDashboardIndex.value = index;
                                           print("***************************************************");
                                           print("Simulated Dashboards: ${homecontroller.selectedDashboard['name']}");
 
-                                          // homecontroller.selectedDashboardId.value = dashboard['id'] ?? '';
-                                          // homecontroller.fetchDashboardItems(dashboard['id'] ?? '');
-                                          // homecontroller.loadDashboardData( dashboard['id'] ?? '');
                                         },
                                       );
                                     },
@@ -358,6 +354,64 @@ class _DashboardVisualizationItemState extends State<DashboardVisualizationItem>
             ],
           );
         },
+      ),
+    );
+  }
+}
+
+
+class NoDashboardSelected extends StatelessWidget {
+  final VoidCallback? onSelectDashboard;
+
+  const NoDashboardSelected({
+    super.key,
+    this.onSelectDashboard,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.dashboard_customize_outlined,
+              size: 80,
+              color: Colors.grey.shade400,
+            ),
+            const SizedBox(height: 16),
+
+            const Text(
+              "No Dashboard Selected",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 8),
+
+            Text(
+              "Select a dashboard to view visualizations, KPIs, charts, and reports.",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 14,
+              ),
+            ),
+
+            if (onSelectDashboard != null) ...[
+              const SizedBox(height: 20),
+              ElevatedButton.icon(
+                onPressed: onSelectDashboard,
+                icon: const Icon(Icons.dashboard),
+                label: const Text("Select Dashboard"),
+              ),
+            ],
+          ],
+        ),
       ),
     );
   }

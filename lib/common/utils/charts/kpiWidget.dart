@@ -15,7 +15,7 @@ class KPIWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HomeController>();
 
-    controller.selectedVisualizationIndex =
+    controller.selectedVisualizationIndex.value =
         controller.dashboardVisualizations.indexOf(item);
 
     final data = item['data'];

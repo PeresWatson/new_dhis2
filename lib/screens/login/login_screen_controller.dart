@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/features/Notifications/app_loaders.dart';
 import 'package:dhis_2/features/Notifications/app_snackbars.dart';
+import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,6 +11,7 @@ import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
   final storage = GetStorage();
+  final network = Get.find<NetworkController>();
   final obscurePassword = true.obs;
 
   // Reactive loading state for the UI
@@ -58,6 +61,10 @@ class LoginController extends GetxController {
   }
 
   Future<void> login(String url, String username, String password) async {
+    if (Get.find<NetworkController>().isOnline.value == false) {
+      AppSnackbars.showNoInternet();
+      return;
+    }
     try {
       // isLoading.value = true;
       AppLoaders.showLoadingOverlay(message: "authenticating..");
@@ -78,18 +85,21 @@ class LoginController extends GetxController {
       // 5. Check if the server accepted the credentials (200 OK)
       if (response.statusCode == 200) {
         userData = jsonDecode(response.body);
-        storage.write('user_profile', {
-          "id": "GOLswS44mh8",
-          "username": "admin",
-          "firstName": "John",
-          "surname": "Doe",
-          "fullName": "John Doe",
-          "email": "john@example.com",
-          "country": "Sierra Leone",
-          "jobTitle": "Health Officer",
+        await storage.write('isFirstTime', false);
+        await storage.write('isLoggedIn', true);
+        await storage.write('user_profile', {
+          "id": userData['id'],
+          "username": userData['username'],
+          "firstName": userData['firstName'],
+          "surname": userData['surname'],
+          "fullName": userData['name'],
+          "email": userData['email'],
+          "country": userData['nationality'],
+          "jobTitle": userData['jobTitle'],
           "serverUrl": url,
         });
-
+        await Get.find<HomeController>().fetchSimulatedData();
+        Get.find<NavigationController>().selectedScreenIndex.value = 0;
         isLoading.value = false;
         AppLoaders.hideLoadingOverlay();
         AppSnackbars.showSuccess(title: titleSuccess, message: msgLoginSuccess);

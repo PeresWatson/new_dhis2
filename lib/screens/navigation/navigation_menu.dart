@@ -9,7 +9,7 @@ class NavigationController extends GetxController {
   // Your existing code
   var selectedScreenIndex = 0.obs;
 
-  final List<Widget> screens = [HomeScreen(), SimpleAnalyticsPage(), ExploreScreen(), SettingsScreen()];
+  final List<Widget> screens = [HomeScreen(), SimpleAnalyticsPage(), SettingsScreen()];
 
   void changeTab(int index) {
     selectedScreenIndex.value = index;
@@ -34,7 +34,6 @@ class NavigationMenu extends StatelessWidget {
           destinations: const [
             NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
             NavigationDestination(icon: Icon(Icons.analytics_outlined), selectedIcon: Icon(Icons.analytics), label: 'Analytics'),
-            NavigationDestination(icon: Icon(Icons.explore_outlined), selectedIcon: Icon(Icons.explore), label: 'Explore'),
             NavigationDestination(icon: Icon(Icons.settings_outlined), selectedIcon: Icon(Icons.settings), label: 'Settings'),
           ],
         ),

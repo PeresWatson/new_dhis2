@@ -11,7 +11,7 @@ class BarChartWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.find<HomeController>().selectedVisualizationIndex = Get.find<HomeController>().dashboardVisualizations.indexOf(item);
+    Get.find<HomeController>().selectedVisualizationIndex.value = Get.find<HomeController>().dashboardVisualizations.indexOf(item);
 
     return Container(
       height: 400,
