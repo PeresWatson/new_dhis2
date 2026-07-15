@@ -16,11 +16,11 @@ jobs:
         with:
           flutter-version: "3.44.6"
 
-      - run: flutter --version
       - run: flutter pub get
-      - run: flutter build apk --release
+
+      - run: flutter build apk --release --split-per-abi
 
       - uses: actions/upload-artifact@v4
         with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
+          name: split-apks
+          path: build/app/outputs/flutter-apk/*.apk

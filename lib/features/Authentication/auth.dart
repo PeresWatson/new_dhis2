@@ -1,6 +1,7 @@
 import 'package:dhis_2/screens/login/login_screen.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/onboarding_screen/onboarding_screen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -9,6 +10,7 @@ class AuthService extends GetxController {
 
   @override
   void onReady() {
+    FlutterNativeSplash.remove();
     screenRedirect();
   }
 
@@ -27,7 +29,7 @@ class AuthService extends GetxController {
       Get.offAll(() => LoginScreen());
     }
   }
-  
+
   void logout() {
     storage.write('isLoggedIn', false);
     storage.remove('user_profile');

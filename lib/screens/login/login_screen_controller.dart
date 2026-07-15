@@ -107,7 +107,7 @@ class LoginController extends GetxController {
       } else {
         isLoading.value = false;
         AppLoaders.hideLoadingOverlay();
-        AppSnackbars.showError(title: "Login Failed", message: 'Invalid username or password', position: SnackPosition.TOP);
+        AppSnackbars.showError(title: "Login Failed", message: 'Invalid username or password or server url', position: SnackPosition.TOP);
       }
     } catch (e) {
       Get.snackbar('Error', 'Network connection issue: $e');
