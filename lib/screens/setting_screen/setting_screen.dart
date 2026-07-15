@@ -1,19 +1,19 @@
 import 'package:dhis_2/common/utils/methods/dataSize.dart';
 import 'package:dhis_2/common/utils/methods/lastTime.dart';
+import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/features/Authentication/auth.dart';
-import 'package:dhis_2/screens/login/login_screen.dart';
-import 'package:dhis_2/screens/navigation/navigation_menu.dart';
 import 'package:dhis_2/screens/setting_screen/setting_screen_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+
 /// ===============================
 /// SCREEN
 /// ===============================
 class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
 
-  final  c = Get.find<SettingScreenController>();
+  final c = Get.find<SettingScreenController>();
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +58,6 @@ class SettingsScreen extends StatelessWidget {
           _section("STORAGE"),
 
           _storageCard(),
-
-          const SizedBox(height: 16),
-          _section("SECURITY"),
-
-          _securityCard(),
 
           const SizedBox(height: 16),
           _section("SUPPORT"),
@@ -121,12 +116,14 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   Widget _serverCard() {
     final storage = GetStorage();
-    return Card(
-      child: ListTile(
-        leading: const Icon(Icons.cloud, color: Color(0xFF1D5288)),
-        title: const Text("Server Endpoint"),
-        subtitle: Text(storage.read('user_profile')?['serverUrl'] ?? 'Not Specified'),
-        trailing: Icon(Icons.circle, size: 12, color: c.serverOnline.value ? Colors.green : Colors.red),
+    return Obx(
+      () => Card(
+        child: ListTile(
+          leading: const Icon(Icons.cloud, color: Color(0xFF1D5288)),
+          title: const Text("Server Endpoint"),
+          subtitle: Text(storage.read('user_profile')?['serverUrl'] ?? 'Not Specified'),
+          trailing: Icon(Icons.circle, size: 12, color: Get.find<NetworkController>().isOnline.value ? Colors.green : Colors.red),
+        ),
       ),
     );
   }
@@ -135,40 +132,25 @@ class SettingsScreen extends StatelessWidget {
   /// SYNC
   /// ===============================
   Widget _syncCard() {
-  return Card(
-    child: Column(
-      children: [
-        Obx(() => SwitchListTile(
-              title: const Text("WiFi Only Sync"),
-              value: c.wifiOnly.value,
-              onChanged: c.toggleWifi,
-            )),
+    return Card(
+      child: Column(
+        children: [
+          Obx(() => SwitchListTile(title: const Text("WiFi Only Sync"), value: c.wifiOnly.value, onChanged: c.toggleWifi)),
 
-        Obx(() => SwitchListTile(
-              title: const Text("Auto Sync"),
-              value: c.autoSync.value,
-              onChanged: c.toggleAutoSync,
-            )),
+          Obx(() => SwitchListTile(title: const Text("Auto Sync"), value: c.autoSync.value, onChanged: c.toggleAutoSync)),
 
-        Obx(
-          () => ListTile(
-            leading: const Icon(Icons.history),
-            title: const Text("Last Sync"),
-            subtitle: Text(
-              c.lastSync.value == "Never"
-                  ? "Never"
-                  : lastTime(c.lastSync.value),
-            ),
-            trailing: ElevatedButton(
-              onPressed: c.updateSyncTime,
-              child: const Text("Sync"),
+          Obx(
+            () => ListTile(
+              leading: const Icon(Icons.history),
+              title: const Text("Last Sync"),
+              subtitle: Text(c.lastSync.value == "Never" ? "Never" : lastTime(c.lastSync.value)),
+              trailing: ElevatedButton(onPressed: c.updateSyncTime, child: const Text("Sync")),
             ),
           ),
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 
   /// ===============================
   /// DASHBOARD
@@ -279,15 +261,6 @@ class SettingsScreen extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  /// ===============================
-  /// SECURITY
-  /// ===============================
-  Widget _securityCard() {
-    return const Card(
-      child: ListTile(leading: Icon(Icons.lock), title: Text("Change Password"), trailing: Icon(Icons.arrow_forward_ios, size: 16)),
     );
   }
 

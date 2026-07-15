@@ -1,574 +1,376 @@
-import 'package:dhis_2/screens/analytics_screen/analytics_screen_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class AnalyticsPage extends StatelessWidget {
-  const AnalyticsPage({Key? key}) : super(key: key);
+class AnalyticsPage extends StatefulWidget {
+  const AnalyticsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final controller = Get.put(AnalyticsController());
+  State<AnalyticsPage> createState() => _AnalyticsPageState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('DHIS2 Analytics'),
-        backgroundColor: Colors.blue.shade700,
-        elevation: 2,
-        actions: [
-          Obx(() => IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: controller.isLoading.value ? null : controller.fetchAnalytics,
-          )),
-          Obx(() => IconButton(
-            icon: const Icon(Icons.clear_all),
-            onPressed: controller.selectedIndicators.isEmpty ? null : controller.clearSelection,
-          )),
-        ],
-      ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Loading analytics data...'),
-              ],
-            ),
-          );
-        }
+class _AnalyticsPageState extends State<AnalyticsPage> {
+  String selectedIndicator = 'ANC Coverage Trend';
+  String selectedVisualization = 'line';
 
-        return Column(
-          children: [
-            _buildFilterSection(controller),
-            Expanded(
-              child: _buildResultsSection(controller),
-            ),
-          ],
-        );
-      }),
-    );
+  final List<String> indicators = [
+    'ANC Coverage Trend',
+    'Gender Distribution',
+    'District Performance',
+    'ANC KPI Snapshot',
+    'Facility Reporting Rate',
+  ];
+
+  final List<String> visualizationTypes = ['line', 'bar', 'pie', 'table', 'kpi', 'map'];
+
+  final GlobalKey indicatorKey = GlobalKey();
+  final GlobalKey visualizationKey = GlobalKey();
+
+  OverlayEntry? _overlayEntry;
+
+  bool showDropdown = false;
+
+  final TextEditingController searchController = TextEditingController();
+
+  List<String> filteredItems = [];
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    _overlayEntry?.remove();
+    super.dispose();
   }
 
-  Widget _buildFilterSection(AnalyticsController controller) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade300),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Organisation Unit Selection
-          Obx(() => DropdownButtonFormField<String>(
-            value: controller.selectedOrgUnit.value,
-            decoration: const InputDecoration(
-              labelText: 'Organisation Unit',
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              prefixIcon: Icon(Icons.apartment),
+  void _toggleDropdown({
+    required BuildContext context,
+    required GlobalKey key,
+    required List<String> items,
+    required String selectedValue,
+    required Function(String) onSelected,
+  }) {
+    if (showDropdown) {
+      _hideDropdown();
+    } else {
+      _showDropdown(context: context, key: key, items: items, selectedValue: selectedValue, onSelected: onSelected);
+    }
+  }
+
+  void _showDropdown({
+    required BuildContext context,
+    required GlobalKey key,
+    required List<String> items,
+    required String selectedValue,
+    required Function(String) onSelected,
+  }) {
+    final renderBox = key.currentContext!.findRenderObject() as RenderBox;
+
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    filteredItems = List.from(items);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) {
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: _hideDropdown,
+              child: Container(color: Colors.transparent),
             ),
-            items: controller.organisationUnits.map((unit) {
-              return DropdownMenuItem<String>(
-                value: unit['id'],
-                child: Text(unit['name']!),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                controller.setOrgUnit(value);
-              }
-            },
-          )),
-          
-          const SizedBox(height: 12),
-          
-          // Period Selection
-          Obx(() => DropdownButtonFormField<String>(
-            value: controller.selectedPeriod.value,
-            decoration: const InputDecoration(
-              labelText: 'Period',
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              prefixIcon: Icon(Icons.calendar_today),
-            ),
-            items: controller.periodOptions.map((period) {
-              return DropdownMenuItem<String>(
-                value: period,
-                child: Text(period.replaceAll('_', ' ')),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                controller.setPeriod(value);
-              }
-            },
-          )),
-          
-          const SizedBox(height: 12),
-          
-          // Aggregation Type Selection
-          Obx(() => DropdownButtonFormField<String>(
-            value: controller.aggregationType.value,
-            decoration: const InputDecoration(
-              labelText: 'Aggregation Type',
-              border: OutlineInputBorder(),
-              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              prefixIcon: Icon(Icons.calculate),
-            ),
-            items: controller.aggregationTypes.map((type) {
-              return DropdownMenuItem<String>(
-                value: type,
-                child: Text(type),
-              );
-            }).toList(),
-            onChanged: (value) {
-              if (value != null) {
-                controller.setAggregationType(value);
-              }
-            },
-          )),
-          
-          const SizedBox(height: 12),
-          
-          // Indicator Selection
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade400),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Select Indicators',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+
+            Positioned(
+              left: offset.dx,
+              top: offset.dy + size.height + 6,
+              width: size.width,
+              child: Material(
+                elevation: 12,
+                borderRadius: BorderRadius.circular(16),
+                child: StatefulBuilder(
+                  builder: (context, setOverlayState) {
+                    return Container(
+                      constraints: const BoxConstraints(maxHeight: 350),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            controller: searchController,
+                            decoration: InputDecoration(
+                              hintText: 'Search...',
+                              prefixIcon: const Icon(Icons.search),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            ),
+                            onChanged: (value) {
+                              setOverlayState(() {
+                                filteredItems = items.where((e) => e.toLowerCase().contains(value.toLowerCase())).toList();
+                              });
+                            },
+                          ),
+
+                          const SizedBox(height: 12),
+
+                          Flexible(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: filteredItems.length,
+                              itemBuilder: (context, index) {
+                                final item = filteredItems[index];
+
+                                final selected = item == selectedValue;
+
+                                return ListTile(
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                  leading: CircleAvatar(
+                                    radius: 18,
+                                    backgroundColor: selected ? const Color(0xFF1D5288) : Colors.grey.shade200,
+                                    child: Icon(Icons.analytics, size: 18, color: selected ? Colors.white : Colors.grey),
+                                  ),
+                                  title: Text(item, style: const TextStyle(fontWeight: FontWeight.w500)),
+                                  trailing: selected ? const Icon(Icons.check_circle, color: Color(0xFF1D5288)) : null,
+                                  onTap: () {
+                                    onSelected(item);
+                                    _hideDropdown();
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Obx(() => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      decoration: BoxDecoration(
-                        color: Colors.blue,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        controller.selectedIndicators.length.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                    )),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Obx(() => Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
-                  children: controller.indicators.map((indicator) {
-                    final bool isSelected = controller.isIndicatorSelected(indicator);
-                    return FilterChip(
-                      label: Text(
-                        indicator['name']!,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: isSelected ? Colors.white : Colors.black,
-                        ),
-                      ),
-                      selected: isSelected,
-                      onSelected: (_) => controller.toggleIndicator(indicator),
-                      backgroundColor: Colors.grey.shade200,
-                      selectedColor: Colors.blue,
-                      checkmarkColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
                     );
-                  }).toList(),
-                )),
-              ],
-            ),
-          ),
-          
-          const SizedBox(height: 12),
-          
-          // Action Buttons
-          Row(
-            children: [
-              Expanded(
-                child: Obx(() => ElevatedButton.icon(
-                  onPressed: controller.isLoading.value ? null : controller.fetchAnalytics,
-                  icon: const Icon(Icons.search),
-                  label: const Text('Fetch Analytics'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    backgroundColor: Colors.blue,
-                  ),
-                )),
-              ),
-              const SizedBox(width: 12),
-              Obx(() => OutlinedButton.icon(
-                onPressed: controller.selectedIndicators.isEmpty ? null : controller.clearSelection,
-                icon: const Icon(Icons.clear),
-                label: const Text('Clear'),
-                style: OutlinedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  },
                 ),
-              )),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildResultsSection(AnalyticsController controller) {
-    return Obx(() {
-      if (controller.analyticsData.isEmpty) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.analytics_outlined,
-                size: 80,
-                color: Colors.grey.shade400,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'No analytics data',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Select indicators and click "Fetch Analytics"',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade500,
-                ),
-              ),
-            ],
-          ),
-        );
-      }
-
-      return DefaultTabController(
-        length: 2,
-        child: Column(
-          children: [
-            // Summary bar
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              color: Colors.grey.shade100,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Total Records: ${controller.totalRecords}',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    controller.selectedIndicatorCount,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const TabBar(
-              labelColor: Colors.blue,
-              unselectedLabelColor: Colors.grey,
-              tabs: [
-                Tab(text: 'Data Table', icon: Icon(Icons.table_chart)),
-                Tab(text: 'Summary', icon: Icon(Icons.summarize)),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _buildDataTable(controller),
-                  _buildSummaryView(controller),
-                ],
               ),
             ),
           ],
-        ),
-      );
+        );
+      },
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+
+    setState(() {
+      showDropdown = true;
     });
   }
 
-  Widget _buildDataTable(AnalyticsController controller) {
-    final rows = controller.getFormattedRows();
-    
-    if (rows.isEmpty) {
-      return const Center(child: Text('No data available'));
-    }
+  void _hideDropdown() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
 
-    final headers = rows.first.keys.toList();
+    searchController.clear();
 
-    return SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Container(
-          padding: const EdgeInsets.all(8),
-          child: DataTable(
-            columnSpacing: 16,
-            headingRowColor: MaterialStateProperty.resolveWith(
-              (states) => Colors.blue.shade50,
-            ),
-            columns: headers.map((header) {
-              return DataColumn(
-                label: Text(
-                  header.replaceAll('_', ' ').toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+    setState(() {
+      showDropdown = false;
+    });
+  }
+
+  Widget _filterDropdown({
+    required String title,
+    required String value,
+    required GlobalKey key,
+    required VoidCallback onTap,
+    required IconData icon,
+  }) {
+    return GestureDetector(
+      key: key,
+      onTap: onTap,
+      child: Container(
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade100,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: const Color(0xFF1D5288)),
+
+            const SizedBox(width: 12),
+
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                  Text(
+                    value,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
-                ),
-              );
-            }).toList(),
-            rows: rows.map((row) {
-              return DataRow(
-                cells: headers.map((header) {
-                  return DataCell(
-                    Text(row[header]?.toString() ?? '-'),
-                  );
-                }).toList(),
-              );
-            }).toList(),
-          ),
+                ],
+              ),
+            ),
+
+            Icon(showDropdown ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down, color: const Color(0xFF1D5288)),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildSummaryView(AnalyticsController controller) {
-    final chartData = controller.getChartData();
-    
-    if (chartData.isEmpty) {
-      return const Center(child: Text('No data available for summary'));
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Card(
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Summary Statistics',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+      appBar: AppBar(title: const Text('Analytics'), centerTitle: true),
+
+      body: Padding(
+        padding: const EdgeInsets.all(12),
+
+        child: Column(
+          children: [
+            Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+
+                child: Column(
+                  children: [
+                    _filterDropdown(
+                      title: "Indicator",
+                      value: selectedIndicator,
+                      icon: Icons.analytics_outlined,
+                      key: indicatorKey,
+                      onTap: () {
+                        _toggleDropdown(
+                          context: context,
+                          key: indicatorKey,
+                          items: indicators,
+                          selectedValue: selectedIndicator,
+                          onSelected: (value) {
+                            setState(() {
+                              selectedIndicator = value;
+                            });
+                          },
+                        );
+                      },
                     ),
-                  ),
-                  const Divider(),
-                  const SizedBox(height: 16),
-                  _buildSummaryCard(
-                    title: 'Total Records',
-                    value: controller.totalRecords.toString(),
-                    icon: Icons.numbers,
-                    color: Colors.blue,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSummaryCard(
-                    title: 'Indicators Selected',
-                    value: controller.selectedIndicators.length.toString(),
-                    icon: Icons.bar_chart,
-                    color: Colors.green,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSummaryCard(
-                    title: 'Average Value',
-                    value: controller.calculateAverage().toStringAsFixed(2),
-                    icon: Icons.trending_up,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSummaryCard(
-                    title: 'Maximum Value',
-                    value: controller.calculateMax().toStringAsFixed(2),
-                    icon: Icons.arrow_upward,
-                    color: Colors.red,
-                  ),
-                  const SizedBox(height: 12),
-                  _buildSummaryCard(
-                    title: 'Minimum Value',
-                    value: controller.calculateMin().toStringAsFixed(2),
-                    icon: Icons.arrow_downward,
-                    color: Colors.purple,
-                  ),
-                ],
-              ),
-            ),
-          ),
-          
-          const SizedBox(height: 16),
-          
-          // Quick Stats Grid
-          Card(
-            elevation: 4,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Quick Stats',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+
+                    const SizedBox(height: 12),
+
+                    _filterDropdown(
+                      title: "Visualization",
+                      value: selectedVisualization.toUpperCase(),
+                      icon: Icons.bar_chart,
+                      key: visualizationKey,
+                      onTap: () {
+                        _toggleDropdown(
+                          context: context,
+                          key: visualizationKey,
+                          items: visualizationTypes,
+                          selectedValue: selectedVisualization,
+                          onSelected: (value) {
+                            setState(() {
+                              selectedVisualization = value;
+                            });
+                          },
+                        );
+                      },
                     ),
-                  ),
-                  const Divider(),
-                  const SizedBox(height: 16),
-                  GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    children: [
-                      _buildQuickStatCard(
-                        title: 'Total Value',
-                        value: controller.calculateTotal().toStringAsFixed(2),
-                        icon: Icons.attach_money,
-                        color: Colors.green,
-                      ),
-                      _buildQuickStatCard(
-                        title: 'Data Points',
-                        value: controller.totalRecords.toString(),
-                        icon: Icons.data_usage,
-                        color: Colors.blue,
-                      ),
-                      _buildQuickStatCard(
-                        title: 'Avg per Indicator',
-                        value: controller.calculateAvgPerIndicator().toStringAsFixed(2),
-                        icon: Icons.equalizer,
-                        color: Colors.orange,
-                      ),
-                      _buildQuickStatCard(
-                        title: 'Range',
-                        value: (controller.calculateMax() - controller.calculateMin()).toStringAsFixed(2),
-                        icon: Icons.compare_arrows,
-                        color: Colors.purple,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSummaryCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: color),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.w500,
-                color: color,
-              ),
-            ),
-          ),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildQuickStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-    required Color color,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(0.2)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, color: color, size: 20),
-              const SizedBox(width: 8),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: color,
-                    fontWeight: FontWeight.w500,
-                  ),
+                  ],
                 ),
+              ),
+            ),
+
+            const SizedBox(height: 12),
+
+            Expanded(
+              child: Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Center(child: _buildVisualization()),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVisualization() {
+    switch (selectedVisualization) {
+      case 'line':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.show_chart, size: 100, color: Color(0xFF1D5288)),
+            SizedBox(height: 10),
+            Text('Line Chart', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ],
+        );
+
+      case 'bar':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.bar_chart, size: 100, color: Color(0xFF1D5288)),
+            SizedBox(height: 10),
+            Text('Bar Chart', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ],
+        );
+
+      case 'pie':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.pie_chart, size: 100, color: Color(0xFF1D5288)),
+            SizedBox(height: 10),
+            Text('Pie Chart', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ],
+        );
+
+      case 'table':
+        return DataTable(
+          columns: const [
+            DataColumn(label: Text('District')),
+            DataColumn(label: Text('Value')),
+          ],
+          rows: const [
+            DataRow(cells: [DataCell(Text('Bo')), DataCell(Text('85'))]),
+            DataRow(cells: [DataCell(Text('Kenema')), DataCell(Text('79'))]),
+            DataRow(cells: [DataCell(Text('Kono')), DataCell(Text('64'))]),
+          ],
+        );
+
+      case 'kpi':
+        return Container(
+          width: 260,
+          height: 150,
+          decoration: BoxDecoration(color: const Color(0xFF1D5288), borderRadius: BorderRadius.circular(16)),
+          child: const Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('ANC Coverage', style: TextStyle(color: Colors.white, fontSize: 16)),
+              SizedBox(height: 10),
+              Text(
+                '84%',
+                style: TextStyle(color: Colors.white, fontSize: 42, fontWeight: FontWeight.bold),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-        ],
-      ),
-    );
+        );
+
+      case 'map':
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(Icons.map, size: 100, color: Color(0xFF1D5288)),
+            SizedBox(height: 10),
+            Text('Map Visualization', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          ],
+        );
+
+      default:
+        return const Text('No visualization selected');
+    }
   }
 }

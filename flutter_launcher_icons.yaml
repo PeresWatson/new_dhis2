@@ -1,0 +1,7 @@
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/logo/dhis_logo.png"
+
+  adaptive_icon_background: "#1D5288"
+  adaptive_icon_foreground: "assets/logo/dhis_logo.png"

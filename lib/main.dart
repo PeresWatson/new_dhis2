@@ -1,6 +1,5 @@
 import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/features/Authentication/auth.dart';
-import 'package:dhis_2/binding/global_binding.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
 import 'package:dhis_2/screens/navigation/navigation_menu.dart';
