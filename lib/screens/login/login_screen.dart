@@ -91,9 +91,7 @@ class LoginScreen extends StatelessWidget {
 
                             if (username.isEmpty || password.isEmpty || url.isEmpty) {
                               AppSnackbars.showError(title: controller.titleError, message: controller.errEmptyFields);
-                              return;
                             } else {
-                              // controller.D2login(url: url, username: username, password: password);
                               controller.login(url, username, password);
                             }
                           },

@@ -1,6 +1,7 @@
 import 'package:dhis_2/common/utils/methods/network_manager.dart';
 import 'package:dhis_2/features/Notifications/app_snackbars.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
 
 import 'dart:convert';
@@ -15,6 +16,7 @@ class HomeController extends GetxController {
   var selectedVisualizationIndex = (-1).obs;
   var selectedDashboard = jsonDecode('{}');
   var dashboardItems = jsonDecode('{}');
+  final MapController mapController = MapController();
 
   final dashboardVisualizations = <Map<String, dynamic>>[].obs;
   final String baseUrl = "https://play.im.dhis2.org/dev";
@@ -27,6 +29,12 @@ class HomeController extends GetxController {
   var isfetchingDashboards = false.obs;
   var isfetchingDashboardItems = false.obs;
 
+  var isfullScreenLineChart = false.obs;
+  var isfullScreenBarChart = false.obs;
+  var isfullScreenPieChart = false.obs;
+  var isfullScreenMap = false.obs;
+  var isfullScreenTable = false.obs;
+  
   // FETCHING SIMULATED DATA FROM ASSETS FOLDER
 
   Future<void> fetchSimulatedData() async {

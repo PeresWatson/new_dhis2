@@ -15,15 +15,15 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await GetStorage.init();
-  
-  Get.put(NetworkController(),permanent: true);
+
+  Get.put(NetworkController(), permanent: true);
   Get.put(AuthService(), permanent: true);
 
   // Notice permanent: true here
-  Get.lazyPut(() => LoginController(),fenix: true);
+  Get.lazyPut(() => LoginController(), fenix: true);
   Get.lazyPut(() => HomeController(), fenix: true); // Notice fenix: true here
-  Get.lazyPut(() => SettingScreenController(),fenix: true);
-  Get.lazyPut(() => NavigationController(),fenix: true);
+  Get.lazyPut(() => SettingScreenController(), fenix: true);
+  Get.lazyPut(() => NavigationController(), fenix: true);
   runApp(const MyApp());
 }
 
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DHIS2 Mobile Client',
-      initialBinding: GlobalBinding(),
+      // initialBinding: GlobalBinding(),
       home: const OnboardingScreen(),
     );
   }
