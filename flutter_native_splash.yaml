@@ -1,0 +1,9 @@
+flutter_native_splash:
+  color: "#FFFFFF"
+  color_dark: "#121212"
+
+  image: assets/logo/dhis_logo.png
+  image_dark: assets/logo/dhis_logo.png
+
+  android: true
+  ios: true
