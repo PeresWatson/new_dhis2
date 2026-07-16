@@ -7,6 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+const Color kBrandColor = Color(0xFF1D5288);
+const Color kScaffoldBg = Color(0xFFF4F6F9);
+
 /// ===============================
 /// SCREEN
 /// ===============================
@@ -14,54 +17,68 @@ class SettingsScreen extends StatelessWidget {
   SettingsScreen({super.key});
 
   final c = Get.find<SettingScreenController>();
+  final GetStorage _storage = GetStorage();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4F6F9),
-
+      backgroundColor: kScaffoldBg,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF1D5288),
-        title: const Text(
-          "Settings",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
+        backgroundColor: kBrandColor,
+        title: const Text('Settings', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
       ),
-
       body: ListView(
-        padding: const EdgeInsets.all(16),
-
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
         children: [
           _profileCard(),
-
-          const SizedBox(height: 16),
-          _section("SYSTEM"),
-
+          const SizedBox(height: 24),
+          _section('System'),
           _serverCard(),
-
-          const SizedBox(height: 16),
-          _section("SYNC"),
-
+          const SizedBox(height: 24),
+          _section('Sync'),
           _syncCard(),
-
-          const SizedBox(height: 16),
-          _section("STORAGE"),
-
+          const SizedBox(height: 24),
+          _section('Storage'),
           _storageCard(),
-
-          const SizedBox(height: 16),
-          _section("SUPPORT"),
-
+          const SizedBox(height: 24),
+          _section('Support'),
           _supportCard(),
-
-          const SizedBox(height: 16),
-
-          _aboutCard(),
-
-          const SizedBox(height: 20),
-
-          _logoutCard(),
+          const SizedBox(height: 28),
+          _aboutTile(),
+          const SizedBox(height: 24),
+          _logoutButton(),
         ],
+      ),
+    );
+  }
+
+  /// ===============================
+  /// SHARED CARD SHELL
+  /// ===============================
+  /// One consistent card style (flat, subtle border, no shadow) used across
+  /// every section so the page reads as a single system instead of a mix of
+  /// elevated and bordered cards.
+  Widget _card({required Widget child, EdgeInsetsGeometry? padding}) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: padding != null ? Padding(padding: padding, child: child) : child,
+    );
+  }
+
+  /// ===============================
+  /// SECTION TITLE
+  /// ===============================
+  Widget _section(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        title.toUpperCase(),
+        style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: Colors.grey.shade500, letterSpacing: 0.6),
       ),
     );
   }
@@ -70,33 +87,49 @@ class SettingsScreen extends StatelessWidget {
   /// PROFILE
   /// ===============================
   Widget _profileCard() {
-    final storage = GetStorage();
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            const CircleAvatar(
-              radius: 28,
-              backgroundColor: Color(0xFF1D5288),
-              child: Icon(Icons.person, color: Colors.white),
-            ),
-            const SizedBox(width: 12),
+    final profile = _storage.read('user_profile');
 
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(storage.read('user_profile')?['fullName'] ?? 'User', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                  Text(storage.read('user_profile')?['email'] ?? 'user@example.com', style: const TextStyle(color: Colors.grey)),
-                  Text(storage.read('user_profile')?['jobTitle'] ?? 'User Role', style: const TextStyle(color: Colors.blue)),
-                ],
-              ),
+    return _card(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          const CircleAvatar(
+            radius: 26,
+            backgroundColor: kBrandColor,
+            child: Icon(Icons.person, color: Colors.white),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  profile?['fullName'] ?? 'User',
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  profile?['email'] ?? 'user@example.com',
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: kBrandColor.withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    profile?['jobTitle'] ?? 'User Role',
+                    style: const TextStyle(color: kBrandColor, fontSize: 12, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -105,36 +138,84 @@ class SettingsScreen extends StatelessWidget {
   /// SERVER
   /// ===============================
   Widget _serverCard() {
-    final storage = GetStorage();
-    return Obx(
-      () => Card(
+    final profile = _storage.read('user_profile');
+
+    return Obx(() {
+      final isOnline = Get.find<NetworkController>().isOnline.value;
+      return _card(
         child: ListTile(
-          leading: const Icon(Icons.cloud, color: Color(0xFF1D5288)),
-          title: const Text("Server Endpoint"),
-          subtitle: Text(storage.read('user_profile')?['serverUrl'] ?? 'Not Specified'),
-          trailing: Icon(Icons.circle, size: 12, color: Get.find<NetworkController>().isOnline.value ? Colors.green : Colors.red),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          leading: const Icon(Icons.cloud_outlined, color: kBrandColor),
+          title: const Text('Server Endpoint'),
+          subtitle: Text(
+            profile?['serverUrl'] ?? 'Not specified',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(shape: BoxShape.circle, color: isOnline ? Colors.green : Colors.red),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                isOnline ? 'Online' : 'Offline',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: isOnline ? Colors.green.shade700 : Colors.red.shade700,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   /// ===============================
   /// SYNC
   /// ===============================
   Widget _syncCard() {
-    return Card(
+    return _card(
       child: Column(
         children: [
-          Obx(() => SwitchListTile(title: const Text("WiFi Only Sync"), value: c.wifiOnly.value, onChanged: c.toggleWifi)),
-
-          Obx(() => SwitchListTile(title: const Text("Auto Sync"), value: c.autoSync.value, onChanged: c.toggleAutoSync)),
-
+          Obx(
+            () => SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              activeColor: kBrandColor,
+              title: const Text('Wi-Fi Only Sync'),
+              subtitle: const Text('Avoid using mobile data', style: TextStyle(fontSize: 12)),
+              value: c.wifiOnly.value,
+              onChanged: c.toggleWifi,
+            ),
+          ),
+          const Divider(height: 1),
+          Obx(
+            () => SwitchListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              activeColor: kBrandColor,
+              title: const Text('Auto Sync'),
+              subtitle: const Text('Sync automatically in the background', style: TextStyle(fontSize: 12)),
+              value: c.autoSync.value,
+              onChanged: c.toggleAutoSync,
+            ),
+          ),
+          const Divider(height: 1),
           Obx(
             () => ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text("Last Sync"),
-              subtitle: Text(c.lastSync.value == "Never" ? "Never" : lastTime(c.lastSync.value)),
-              trailing: ElevatedButton(onPressed: c.updateSyncTime, child: const Text("Sync")),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              leading: const Icon(Icons.history, color: kBrandColor),
+              title: const Text('Last Sync'),
+              subtitle: Text(c.lastSync.value == 'Never' ? 'Never' : lastTime(c.lastSync.value)),
+              trailing: TextButton(
+                onPressed: c.updateSyncTime,
+                style: TextButton.styleFrom(foregroundColor: kBrandColor),
+                child: const Text('Sync now'),
+              ),
             ),
           ),
         ],
@@ -146,96 +227,118 @@ class SettingsScreen extends StatelessWidget {
   /// STORAGE
   /// ===============================
   Widget _storageCard() {
-    final storage = GetStorage();
-    final dashboardCachedData =  storage.read('simulated_dashboards');
-    final UserProfileCachedData =  storage.read('user_profile');
-
-    final usedMb = getDataSizeBytes(storage.read('user_profile')) / (1024 * 1024);
+    // Total local footprint = cached dashboards + cached profile data.
+    final profileData = _storage.read('user_profile');
+    final dashboardData = _storage.read('simulated_dashboards');
+    final usedBytes = getDataSizeBytes(profileData) + getDataSizeBytes(dashboardData);
+    final usedMb = usedBytes / (1024 * 1024);
 
     const maxCacheMb = 10.0;
-
     final progress = (usedMb / maxCacheMb).clamp(0.0, 1.0);
 
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(color: Colors.grey.shade200),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: const [
-                Icon(Icons.storage_rounded, color: Color(0xFF1D5288)),
-                SizedBox(width: 8),
-                Text("Storage Usage", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("${usedMb.toStringAsFixed(2)} MB", style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                Text("of ${maxCacheMb.toStringAsFixed(0)} MB", style: TextStyle(color: Colors.grey.shade600)),
-              ],
-            ),
-
-            const SizedBox(height: 12),
-
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: SizedBox(
-                height: 10,
-                child: LinearProgressIndicator(value: progress, backgroundColor: Colors.grey.shade300, color: const Color(0xFF1D5288)),
+    return _card(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.storage_rounded, color: kBrandColor),
+              const SizedBox(width: 8),
+              const Text('Storage Usage', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+              const Spacer(),
+              Text(
+                '${(progress * 100).toStringAsFixed(0)}%',
+                style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: SizedBox(
+              height: 8,
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Colors.grey.shade200,
+                color: kBrandColor,
               ),
             ),
-
-            const SizedBox(height: 10),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("${(progress * 100).toStringAsFixed(1)}% used", style: TextStyle(color: Colors.grey.shade700)),
-                Text("${(maxCacheMb - usedMb).toStringAsFixed(2)} MB free", style: TextStyle(color: Colors.grey.shade700)),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  c.clearCache();
-                  print("****************Cache cleared****************");
-                  print(usedMb);
-                  print("**********************************************");
-                },
-                icon: const Icon(Icons.delete_outline),
-                label: const Text("Clear Cache"),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            '${usedMb.toStringAsFixed(2)} MB used of ${maxCacheMb.toStringAsFixed(0)} MB',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: _confirmClearCache,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: kBrandColor,
+                side: BorderSide(color: Colors.grey.shade300),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
+              icon: const Icon(Icons.delete_outline),
+              label: const Text('Clear Cache'),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
+  }
+
+  Future<void> _confirmClearCache() async {
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Clear cache?'),
+        content: const Text('This removes locally stored dashboard data. You can sync again anytime.'),
+        actions: [
+          TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Clear'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      c.clearCache();
+      Get.snackbar(
+        'Cache cleared',
+        'Local dashboard data has been removed.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   /// ===============================
   /// SUPPORT
   /// ===============================
   Widget _supportCard() {
-    return const Card(
+    return _card(
       child: Column(
         children: [
-          ListTile(leading: Icon(Icons.help), title: Text("Help Center")),
-          Divider(height: 1),
-          ListTile(leading: Icon(Icons.bug_report), title: Text("Report Issue")),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            leading: const Icon(Icons.help_outline, color: kBrandColor),
+            title: const Text('Help Center'),
+            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+            onTap: () {},
+          ),
+          const Divider(height: 1),
+          ListTile(
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            leading: const Icon(Icons.bug_report_outlined, color: kBrandColor),
+            title: const Text('Report Issue'),
+            trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+            onTap: () {},
+          ),
         ],
       ),
     );
@@ -244,51 +347,62 @@ class SettingsScreen extends StatelessWidget {
   /// ===============================
   /// ABOUT
   /// ===============================
-  Widget _aboutCard() {
-    return const Card(
-      child: ListTile(leading: Icon(Icons.info), title: Text("DHIS2 Mobile Dashboard"), subtitle: Text("Version 1.0.0")),
+  /// Kept as plain centered text rather than another bordered card — two
+  /// lines of metadata don't need a container of their own.
+  Widget _aboutTile() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            'DHIS2 Mobile Dashboard',
+            style: TextStyle(color: Colors.grey.shade600, fontSize: 13, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 2),
+          Text('Version 1.0.0', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+        ],
+      ),
     );
   }
 
   /// ===============================
   /// LOGOUT
   /// ===============================
-  Widget _logoutCard() {
-    final storage = GetStorage();
-    return Card(
-      color: Colors.red.shade50,
-      child: GestureDetector(
-        onTap: () async {
-          Get.find<AuthService>().logout();
-        },
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.logout, color: Colors.red),
-              Text(
-                "Logout",
-                style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
+  Widget _logoutButton() {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: _confirmLogout,
+        style: OutlinedButton.styleFrom(
+          foregroundColor: Colors.red,
+          side: BorderSide(color: Colors.red.shade200),
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         ),
+        icon: const Icon(Icons.logout),
+        label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.w600)),
       ),
     );
   }
 
-  /// ===============================
-  /// SECTION TITLE
-  /// ===============================
-  Widget _section(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.grey, letterSpacing: 1.2),
+  Future<void> _confirmLogout() async {
+    final confirmed = await Get.dialog<bool>(
+      AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Log out?'),
+        content: const Text('You will need to sign in again to access your dashboards.'),
+        actions: [
+          TextButton(onPressed: () => Get.back(result: false), child: const Text('Cancel')),
+          TextButton(
+            onPressed: () => Get.back(result: true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Logout'),
+          ),
+        ],
       ),
     );
+
+    if (confirmed == true) {
+      Get.find<AuthService>().logout();
+    }
   }
 }

@@ -28,7 +28,7 @@ class _VisualizationWidgetState extends State<VisualizationWidget> {
 
     return Card(
       elevation: 2,
-      margin: const EdgeInsets.all(12),
+      margin: const EdgeInsets.all(4),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Column(
         children: [

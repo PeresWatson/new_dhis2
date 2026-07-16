@@ -1,5 +1,7 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
+
 import 'package:dhis_2/common/utils/charts/visualization_widget.dart';
 
 // The relative-period model we worked on earlier (Days / Weeks / Bi-weeks /
@@ -17,25 +19,34 @@ const Color kBrandColor = Color(0xFF1D5288);
 class DataElementItem {
   final String id;
   final String name;
-  final String valueType;
 
-  const DataElementItem({required this.id, required this.name, this.valueType = 'Number'});
+  const DataElementItem({required this.id, required this.name});
 }
 
-/// A selectable DHIS2 organisation unit.
+/// A single facility / org unit leaf (level 4 in DHIS2's Sierra Leone tree).
 class OrgUnitItem {
   final String id;
   final String name;
-  final String level;
+
+  const OrgUnitItem({required this.id, required this.name});
+}
+
+/// A district (level 2) with its facilities nested underneath — this is what
+/// drives the two-level "district -> facility" selector, the same shape as
+/// the period selector's "category -> relative period".
+class DistrictOrgUnit {
+  final String id;
+  final String name;
   final double latitude;
   final double longitude;
+  final List<OrgUnitItem> facilities;
 
-  const OrgUnitItem({
+  const DistrictOrgUnit({
     required this.id,
     required this.name,
-    required this.level,
     required this.latitude,
     required this.longitude,
+    required this.facilities,
   });
 }
 
@@ -100,28 +111,205 @@ class AnalyticsQuery {
 }
 
 // ---------------------------------------------------------------------------
-// Mock catalogues (swap these for real metadata/dataStore lookups)
+// Mock catalogues
 // ---------------------------------------------------------------------------
+//
+// Data elements below are the real DHIS2 metadata you supplied. Org units
+// are real facility id/displayName pairs you supplied, bucketed under three
+// real districts (Bo, Bombali, Bonthe — whose ids also came from your data).
+//
+// NOTE: the source list didn't carry a parent/district id per facility, so
+// the district <-> facility grouping here is a placeholder split (just to
+// demonstrate the two-level UI). In production, replace `kMockDistricts`
+// with a real call such as:
+//   GET /api/organisationUnits.json?filter=level:eq:2&fields=id,displayName,children[id,displayName]
+// or lazily fetch a district's children with:
+//   GET /api/organisationUnits/{districtId}.json?fields=children[id,displayName]
 
 const List<DataElementItem> kMockDataElements = [
-  DataElementItem(id: 'de1', name: 'ANC 1st Visit'),
-  DataElementItem(id: 'de2', name: 'ANC 4th Visit'),
-  DataElementItem(id: 'de3', name: 'Penta 3 Doses Given'),
-  DataElementItem(id: 'de4', name: 'Measles Doses Given'),
-  DataElementItem(id: 'de5', name: 'Institutional Deliveries'),
-  DataElementItem(id: 'de6', name: 'Malaria Cases Confirmed'),
-  DataElementItem(id: 'de7', name: 'OPD Attendance'),
-  DataElementItem(id: 'de8', name: 'Facility Reporting Rate', valueType: 'Percentage'),
+  DataElementItem(id: 'rNEpbBxSyu7', name: 'ART No clients with new adverse drug reaction'),
+  DataElementItem(id: 'CxlYcbqio4v', name: 'ART No started Opportunist Infection prophylaxis'),
+  DataElementItem(id: 'ibL7BD2vn2C', name: 'ART treatment stopped due to death'),
+  DataElementItem(id: 'TyQ1vOHM6JO', name: 'ART treatment stopped due to loss to follow-up'),
+  DataElementItem(id: 's46m5MS0hxu', name: 'BCG doses given'),
+  DataElementItem(id: 'uf3svrmp8Oj', name: 'Birth certificate'),
+  DataElementItem(id: 'nzl75uHiWQO', name: 'Blood pressure monitor, electronic or manual available'),
+  DataElementItem(id: 'yO0ZIegEsDk', name: 'Blood transfusion within 3 months before onset of symptoms'),
+  DataElementItem(id: 'QYBJk7sqc1I', name: 'Burns follow-up'),
+  DataElementItem(id: 'zMGEd921xd3', name: 'Burns new'),
+  DataElementItem(id: 'BHvVPwWrrLC', name: 'Burns referrals'),
+  DataElementItem(id: 'A21lT9x7pmc', name: 'Cabin fever'),
+  DataElementItem(id: 'fazCI2ygYkq', name: 'Case detection'),
+  DataElementItem(id: 'eYApmORDKgx', name: 'Case Investigation Conducted By'),
+  DataElementItem(id: 'lvx6qda7SN0', name: 'Case species classification'),
+  DataElementItem(id: 'hhevl49MXyA', name: 'Children from Gen.Paed. ward tested for HIV'),
+  DataElementItem(id: 'HL77Pems4Cv', name: 'Children from Gen.Paed. ward with positive HIV result'),
+  DataElementItem(id: 'ydvyXLhIbTn', name: 'Children from TB ward tested for HIV'),
+  DataElementItem(id: 'AKJvJehDSb6', name: 'Children from TB ward with positive HIV result'),
+  DataElementItem(id: 'xFpppWvT43s', name: 'Children from TFC tested for HIV'),
+  DataElementItem(id: 'KWzP8OWYQL7', name: 'Children from TFC with positive HIV result'),
+  DataElementItem(id: 'qw2sIef52Fu', name: 'Children getting therapeutic feeding'),
+  DataElementItem(id: 'e73QxJpd88B', name: 'Children HIV 1&2 positive test'),
+  DataElementItem(id: 'EnsFXKU7LEW', name: 'Children HIV 1 positive test'),
+  DataElementItem(id: 'GhsYeB89HaL', name: 'Children HIV 2 positive test'),
+  DataElementItem(id: 'MWEGBw0pmgU', name: 'Children initiated ARV treatment'),
+  DataElementItem(id: 'SMrE2ByiyZp', name: 'Children on exclusive breastfeeding (HIV Paed.)'),
+  DataElementItem(id: 'UMexg4VGfaY', name: 'Children on replacement feeding (HIV Paed.)'),
+  DataElementItem(id: 'Y53Jcc9LBYh', name: 'Children supplied with food supplemements'),
+  DataElementItem(id: 'LSJ5mKpyEv1', name: 'CHO'),
+  DataElementItem(id: 'eY5ehpbEsB7', name: 'Cholera (Deaths < 5 yrs)'),
+  DataElementItem(id: 'mxc1T932aWM', name: 'Cholera (Deaths < 5 yrs) Narrative'),
+  DataElementItem(id: 'HJulLfnIAE3', name: 'Clinical Malnutrition follow-up'),
+  DataElementItem(id: 'TBbCcJfZ91x', name: 'Clinical Malnutrition new'),
+  DataElementItem(id: 'oNyB0VOXIM8', name: 'Clinical Malnutrition referrals'),
+  DataElementItem(id: 'SzVk2KvkSSd', name: 'Clinical status'),
+  DataElementItem(id: 'LHXqz53TmPe', name: 'CMC Clients offered information on range of methods exist'),
+  DataElementItem(
+      id: 'OJSkJXzhdU1',
+      name: 'CMC COPE has been introduced at the facility and staff conducted a COPE exercise during the past quarter'),
+  DataElementItem(
+      id: 'DF0B07U2lPZ', name: 'CMC Counseling rooms in FP and CAC service units ensure client privacy and confidentiality'),
+  DataElementItem(id: 'rkAZZFGFEQ7', name: 'CMC Date of clinical monitoring visit'),
+  DataElementItem(id: 'wokFPoIO3NK', name: 'CMC Facility part of health care finance (HCF) board scheme'),
+  DataElementItem(id: 'rTYZHPHVULr', name: 'CMC Facility receives FP referrals from community health workers'),
+  DataElementItem(
+      id: 'rZiGA1lv7Ah', name: 'CMC FP and CAC commodity requests correctly based on previous consumption / stock at hand'),
+  DataElementItem(
+      id: 'EonDTYTVXxM', name: 'CMC FP and CAC procedure rooms have adequate lighting for the performance of all procedures'),
+  DataElementItem(id: 'LadMythncw2', name: 'CMC FP and CAC service units have dedicated hours or space for youth clients'),
+  DataElementItem(id: 'UysSLXGhwrC', name: 'CMC FP services available - Contraceptive pills'),
+  DataElementItem(id: 'ZVqZ600pgzC', name: 'CMC FP services available - Female condoms'),
+  DataElementItem(id: 'X4SRfUAnrHD', name: 'CMC FP services available - Female Sterilization'),
+  DataElementItem(id: 'xqlapchAEVR', name: 'CMC FP services available - Implanon'),
+  DataElementItem(id: 'NKoGfjnFWcE', name: 'CMC FP services available - Injectables (DMPA)'),
+  DataElementItem(id: 'XPyixxRoRFF', name: 'CMC FP services available - IUD'),
+  DataElementItem(id: 'k7vxGJER2SH', name: 'CMC FP services available - Jadelle or Sino-Implant'),
+  DataElementItem(id: 'FNa6RHwtpuV', name: 'CMC FP services available - Male condoms'),
+  DataElementItem(id: 'dupnnRrJB9g', name: 'CMC FP services available - Male Sterilization'),
+  DataElementItem(
+      id: 'tY33H1Xmbiq', name: 'CMC Functioning set-up for decontamination in both FP and CAC service units exist'),
+  DataElementItem(id: 'VEsHW11Ee9u', name: 'CMC IMPLANT INSERTION KITS (functional and in good condition) available'),
+  DataElementItem(id: 'x7UR3a7PnFC', name: 'CMC IMPLANT REMOVAL KITS (functional and in good condition) available'),
+  DataElementItem(id: 'eDO63WfftUO', name: 'CMC Incentives for staff in the FP or CAC service units to provide FP exist'),
+  DataElementItem(
+      id: 'e4r6eLK76M9', name: 'CMC Infection prevention protocol charts are posted in both FP and CAC service units'),
+  DataElementItem(id: 'jhz73zxjuuy', name: 'CMC IUD KITS (functional and in good condition) available'),
+  DataElementItem(id: 'ozL7F7k4l0S', name: 'CMC IUD REMOVAL KITS (functional and in good condition) available'),
+  DataElementItem(id: 'ShRC4KSdfcw', name: 'CMC Leak-proof and puncture-proof containers in FP and CAC exist'),
+  DataElementItem(id: 'W87PJK0RlJa', name: 'CMC MINILAPAROTOMY KITS (functional and in good condition) available'),
+  DataElementItem(
+      id: 'sjir9Ki2vuA',
+      name: 'CMC Most recent delivery of FP and CAC commodities match the request made through the RRF'),
+  DataElementItem(id: 'Els0dBuHtWJ', name: 'CMC MVA KITS (functional and in good condition) available'),
+  DataElementItem(id: 'AX2JjzrU0oU', name: 'CMC National guidelines and standards for FP and CAC service provision available'),
+  DataElementItem(id: 'KKEYwCcGvfl', name: 'CMC NSV KITS (functional and in good condition) available'),
+  DataElementItem(id: 'A4R8Ns0wtJk', name: 'CMC Post-abortion FP methods provided in CAC unit - Contraceptive pills'),
+  DataElementItem(id: 'H5q0J5EeytP', name: 'CMC Post-abortion FP methods provided in CAC unit - Female condoms'),
+  DataElementItem(id: 'lLl7dD5jRhg', name: 'CMC Post-abortion FP methods provided in CAC unit - Implanon'),
+  DataElementItem(id: 'R8X9WHD6Ta9', name: 'CMC Post-abortion FP methods provided in CAC unit - Injectables (DMPA)'),
+  DataElementItem(id: 'J6KG9poh1WL', name: 'CMC Post-abortion FP methods provided in CAC unit - IUD'),
+  DataElementItem(id: 'HcQqfCPHC79', name: 'CMC Post-abortion FP methods provided in CAC unit - Jadelle or Sino-Implant'),
+  DataElementItem(id: 'MqeQ222wxN8', name: 'CMC Post-abortion FP methods provided in CAC unit - Male condoms'),
+  DataElementItem(id: 'otxWZ2s0Iyg', name: 'CMC Post-abortion FP methods provided in CAC unit - Other (specify)'),
 ];
 
-const List<OrgUnitItem> kMockOrgUnits = [
-  OrgUnitItem(id: 'ou1', name: 'Western Area', level: 'District', latitude: 8.484, longitude: -13.234),
-  OrgUnitItem(id: 'ou2', name: 'Bo', level: 'District', latitude: 7.964, longitude: -11.738),
-  OrgUnitItem(id: 'ou3', name: 'Kenema', level: 'District', latitude: 7.876, longitude: -11.190),
-  OrgUnitItem(id: 'ou4', name: 'Pujehun', level: 'District', latitude: 7.35, longitude: -11.7167),
-  OrgUnitItem(id: 'ou5', name: 'Koinadugu', level: 'District', latitude: 9.4167, longitude: -11.4333),
-  OrgUnitItem(id: 'ou6', name: 'Kambia', level: 'District', latitude: 9.13, longitude: -12.92),
-  OrgUnitItem(id: 'ou7', name: 'Bombali', level: 'District', latitude: 9.0, longitude: -12.15),
+const List<DistrictOrgUnit> kMockDistricts = [
+  DistrictOrgUnit(
+    id: 'O6uvpzGd5pu',
+    name: 'Bo',
+    latitude: 7.964,
+    longitude: -11.738,
+    facilities: [
+      OrgUnitItem(id: 'Y8foq27WLti', name: 'Baoma Oil Mill CHC'),
+      OrgUnitItem(id: 'x8SUTSsJoeO', name: 'Baoma-Peje CHP'),
+      OrgUnitItem(id: 'jNb63DIHuwU', name: 'Baoma Station CHP'),
+      OrgUnitItem(id: 'QIp6DHlMGfb', name: 'Baptist Centre Kassirie'),
+      OrgUnitItem(id: 'weLTzWrLXCO', name: 'Bapuya MCHP'),
+      OrgUnitItem(id: 'eLLMnNjuluX', name: 'Barakuya MCHP'),
+      OrgUnitItem(id: 'dGheVylzol6', name: 'Bargbe'),
+      OrgUnitItem(id: 'zFDYIgyGmXG', name: 'Bargbo'),
+      OrgUnitItem(id: 'y5hLlID8ihI', name: 'Barlie MCHP'),
+      OrgUnitItem(id: 'XkA2vbJAWHG', name: 'Barmoi CHP'),
+      OrgUnitItem(id: 'vyIl6s0lhKc', name: 'Barmoi Luma MCHP'),
+      OrgUnitItem(id: 'vELaJEPLOPF', name: 'Barmoi Munu CHP'),
+      OrgUnitItem(id: 'RzKeCma9qb1', name: 'Barri'),
+      OrgUnitItem(id: 'tlvNeDXXrS7', name: 'Bassia MCHP'),
+      OrgUnitItem(id: 'sDTodaygv5u', name: 'Bath Bana MCHP'),
+      OrgUnitItem(id: 'UGVLYrO63mR', name: 'Bathurst MCHP'),
+      OrgUnitItem(id: 'agM0BKQlTh3', name: 'Batkanu CHC'),
+      OrgUnitItem(id: 'iMZihUMzH92', name: 'Bauya (Kongbora) CHC'),
+      OrgUnitItem(id: 'cUNdCErxl9g', name: 'Bayama (K. Teng) MCHP'),
+      OrgUnitItem(id: 'k92yudERPlv', name: 'Bayama MCHP'),
+      OrgUnitItem(id: 'PwgoRuWEDvJ', name: 'Belebu CHP'),
+      OrgUnitItem(id: 'qusWt6sESRU', name: 'Belentin MCHP'),
+      OrgUnitItem(id: 'VpYAl8dXs6m', name: 'Bendoma (Malegohun) MCHP'),
+      OrgUnitItem(id: 'EB1zRKdYjdY', name: 'Bendu Cha'),
+    ],
+  ),
+  DistrictOrgUnit(
+    id: 'fdc6uOvgoji',
+    name: 'Bombali',
+    latitude: 8.887,
+    longitude: -12.045,
+    facilities: [
+      OrgUnitItem(id: 'uFp0ztDOFbI', name: 'Bendu CHC'),
+      OrgUnitItem(id: 'o0BgK1dLhF8', name: 'Bendugu CHC'),
+      OrgUnitItem(id: 'PMsF64R6OJX', name: 'Bendugu (Mongo) CHC'),
+      OrgUnitItem(id: 'er9S4CQ9QOn', name: 'Bendu (Kowa) MCHP'),
+      OrgUnitItem(id: 'n7wN9gMFfZ5', name: 'Benduma CHC'),
+      OrgUnitItem(id: 'Wr8kmywwseZ', name: 'Benduma MCHP'),
+      OrgUnitItem(id: 'amgb83zVxp5', name: 'Bendu Mameima CHC'),
+      OrgUnitItem(id: 'DQHGtTGOP6b', name: 'Bendu (Yawei) CHP'),
+      OrgUnitItem(id: 'yDFM5J6WeKU', name: 'Bengani MCHP'),
+      OrgUnitItem(id: 'iPcreOldeV9', name: 'Benguema MI Room'),
+      OrgUnitItem(id: 'ZKL5hlVG6F6', name: 'Benguima Grassfield MCHP'),
+      OrgUnitItem(id: 'wQ71REGAMet', name: 'Benkeh MCHP'),
+      OrgUnitItem(id: 'OcRCVRy2M7X', name: 'Benkia MCHP'),
+      OrgUnitItem(id: 'GHHvGp7tgtZ', name: 'Binkolo CHC'),
+      OrgUnitItem(id: 'fwH9ipvXde9', name: 'Biriwa'),
+      OrgUnitItem(id: 'kUzpbgPCwVA', name: 'Blama CHC'),
+      OrgUnitItem(id: 'xXhKbgwL39t', name: 'Blama Massaquoi CHP'),
+      OrgUnitItem(id: 'WAjjFMDJKcx', name: 'Blamawo MCHP'),
+      OrgUnitItem(id: 'kBP1UvZpsNj', name: 'Blessed Mokaba clinic'),
+      OrgUnitItem(id: 'lPeZdUm9fD7', name: 'Blessed Mokaba East'),
+      OrgUnitItem(id: 'waNtxFbPjrI', name: 'Blessed Mokaka East Clinic'),
+      OrgUnitItem(id: 'ENHOJz3UH5L', name: 'BMC'),
+      OrgUnitItem(id: 'L5gENbBNNup', name: 'Boajibu CHC'),
+      OrgUnitItem(id: 'rZxk3S0qN63', name: 'Bo Govt. Hosp.'),
+    ],
+  ),
+  DistrictOrgUnit(
+    id: 'lc3eMKXaEfw',
+    name: 'Bonthe',
+    latitude: 7.526,
+    longitude: -12.505,
+    facilities: [
+      OrgUnitItem(id: 'D6yiaX1K5sO', name: 'Bomaru CHP'),
+      OrgUnitItem(id: 'KKkLOTpMXGV', name: 'Bombali Sebora'),
+      OrgUnitItem(id: 'PB8FMGbn19r', name: 'Bombohun MCHP'),
+      OrgUnitItem(id: 'YQYgz8exK9S', name: 'Bombordu MCHP'),
+      OrgUnitItem(id: 'VXrJKs8hic4', name: 'Bomie MCHP'),
+      OrgUnitItem(id: 'H97XE5Ea089', name: 'Bomotoke CHC'),
+      OrgUnitItem(id: 'aVlSMMvgVzf', name: 'Bomu Saamba CHP'),
+      OrgUnitItem(id: 'zAyK28LLaez', name: 'Bongor MCHP'),
+      OrgUnitItem(id: 'IcVHzEm0b6Z', name: 'Bonkababay MCHP'),
+      OrgUnitItem(id: 'VfZnZ6UKyn8', name: 'Bontiwo MCHP'),
+      OrgUnitItem(id: 'uYG1rUdsJJi', name: 'Borma (YKK) MCHP'),
+      OrgUnitItem(id: 'szbAJSWOXjT', name: 'Boroma MCHP'),
+      OrgUnitItem(id: 'cZZG5BMDLps', name: 'Borongoh Makarankay CHP'),
+      OrgUnitItem(id: 'GRc9WXp9gSy', name: 'Bradford CHC'),
+      OrgUnitItem(id: 'kbPmt60yi0L', name: 'Bramaia'),
+      OrgUnitItem(id: 'vRC0stJ5y9Q', name: 'Bucksal Clinic'),
+      OrgUnitItem(id: 'tO01bqIipeD', name: 'Buedu CHC'),
+      OrgUnitItem(id: 'iUauWFeH8Qp', name: 'Bum'),
+      OrgUnitItem(id: 'AXZq6q7Dr6E', name: 'Buma MCHP'),
+      OrgUnitItem(id: 'LZclRdyVk1t', name: 'Bumbanday MCHP'),
+      OrgUnitItem(id: 'OI0BQUurVFS', name: 'Bumban MCHP'),
+      OrgUnitItem(id: 'DwpbWkiqjMy', name: 'Bumbeh MCHP'),
+      OrgUnitItem(id: 'MwfWgjMRgId', name: 'Bumbukoro MCHP'),
+      OrgUnitItem(id: 'Q2USZSJmcNK', name: 'Bumbuna CHC'),
+    ],
+  ),
 ];
 
 // ---------------------------------------------------------------------------
@@ -137,7 +325,7 @@ class AnalyticsPage extends StatefulWidget {
 
 class _AnalyticsPageState extends State<AnalyticsPage> {
   final List<DataElementItem> _dataElements = kMockDataElements;
-  final List<OrgUnitItem> _orgUnits = kMockOrgUnits;
+  final List<DistrictOrgUnit> _districts = kMockDistricts;
 
   final Set<String> _selectedDataElementIds = {};
   final Set<String> _selectedOrgUnitIds = {};
@@ -155,6 +343,13 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   Map<String, dynamic>? _analyticsItem;
 
   bool get _canFetch => _selectedDataElementIds.isNotEmpty && _selectedOrgUnitIds.isNotEmpty;
+
+  /// Flat lookup of every facility across all districts, keyed by id.
+  Iterable<OrgUnitItem> get _allFacilities => _districts.expand((d) => d.facilities);
+
+  /// Finds which district a facility belongs to (used to attach coordinates).
+  DistrictOrgUnit _districtOf(String facilityId) =>
+      _districts.firstWhere((d) => d.facilities.any((f) => f.id == facilityId));
 
   @override
   void dispose() {
@@ -174,7 +369,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     final size = renderBox.size;
     final offset = renderBox.localToGlobal(Offset.zero);
     final screenHeight = MediaQuery.of(context).size.height;
-    final maxHeight = (screenHeight - offset.dy - size.height - 40).clamp(220.0, 420.0);
+    final maxHeight = (screenHeight - offset.dy - size.height - 40).clamp(240.0, 460.0);
 
     _overlayEntry = OverlayEntry(
       builder: (overlayContext) {
@@ -222,7 +417,6 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         selectedIds: _selectedDataElementIds,
         idOf: (e) => e.id,
         labelOf: (e) => e.name,
-        subtitleOf: (e) => e.valueType,
         hintText: 'Search data elements...',
         onChanged: (ids) => setState(() {
           _selectedDataElementIds
@@ -237,13 +431,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   void _openOrgUnitSelector() {
     _showOverlay(
       anchorKey: _orgUnitKey,
-      contentBuilder: (_) => _MultiSelectPanel<OrgUnitItem>(
-        items: _orgUnits,
+      contentBuilder: (_) => _OrgUnitSelectPanel(
+        districts: _districts,
         selectedIds: _selectedOrgUnitIds,
-        idOf: (e) => e.id,
-        labelOf: (e) => e.name,
-        subtitleOf: (e) => e.level,
-        hintText: 'Search organisation units...',
         onChanged: (ids) => setState(() {
           _selectedOrgUnitIds
             ..clear()
@@ -293,9 +483,9 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
   String get _orgUnitDisplay {
     if (_selectedOrgUnitIds.isEmpty) return 'Select organisation unit(s)';
     if (_selectedOrgUnitIds.length == 1) {
-      return _orgUnits.firstWhere((e) => e.id == _selectedOrgUnitIds.first).name;
+      return _allFacilities.firstWhere((e) => e.id == _selectedOrgUnitIds.first).name;
     }
-    return '${_selectedOrgUnitIds.length} org units selected';
+    return '${_selectedOrgUnitIds.length} facilities selected';
   }
 
   String get _periodDisplay => _selectedPeriod.label;
@@ -342,12 +532,16 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
       return {'name': de.name, 'values': values};
     }).toList();
 
+    // Facility-level coordinates aren't in the source metadata, so we use
+    // the parent district's coordinates as a stand-in for map rendering.
+    // Swap this for real facility lat/lng once available.
     final locations = query.orgUnitIds.map((id) {
-      final ou = _orgUnits.firstWhere((e) => e.id == id);
+      final facility = _allFacilities.firstWhere((e) => e.id == id);
+      final district = _districtOf(id);
       return {
-        'name': ou.name,
-        'latitude': ou.latitude,
-        'longitude': ou.longitude,
+        'name': facility.name,
+        'latitude': district.latitude,
+        'longitude': district.longitude,
         'value': (50 + rnd.nextInt(45)).toDouble(),
       };
     }).toList();
@@ -420,7 +614,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
         centerTitle: false,
       ),
       body: Padding(
-        padding: const EdgeInsets.only(left: 12, right: 12, top: 12, bottom: 8),
+        padding: const EdgeInsets.only(left: 2, right: 2, top: 12, bottom: 8),
         child: SingleChildScrollView(
           child: Column(
             children: [
@@ -478,24 +672,20 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: _analyticsItem == null
-                      ? const SizedBox(
-                          height: 180,
-                          child: Center(
-                            child: Text(
-                              'Choose a data element, period and organisation unit,\nthen tap "Fetch Analytics".',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Colors.grey),
-                            ),
+              Padding(
+                padding: const EdgeInsets.all(4),
+                child: _analyticsItem == null
+                    ? const SizedBox(
+                        height: 180,
+                        child: Center(
+                          child: Text(
+                            'Choose a data element, period and organisation unit,\nthen tap "Fetch Analytics".',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
                           ),
-                        )
-                      : VisualizationWidget(item: _analyticsItem!),
-                ),
+                        ),
+                      )
+                    : VisualizationWidget(item: _analyticsItem!),
               ),
             ],
           ),
@@ -509,8 +699,8 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
 // Shared overlay panels
 // ---------------------------------------------------------------------------
 
-/// Searchable checkbox list used for both the data-element and org-unit
-/// selectors (DHIS2 analytics accepts multiple `dx` / `ou` values).
+/// Searchable checkbox list used for the data-element selector (DHIS2
+/// analytics accepts multiple `dx` values).
 class _MultiSelectPanel<T> extends StatefulWidget {
   final List<T> items;
   final Set<String> selectedIds;
@@ -614,6 +804,187 @@ class _MultiSelectPanelState<T> extends State<_MultiSelectPanel<T>> {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Two-level organisation unit selector: pick a district, then pick one or
+/// more facilities within it — same "category -> item" shape as the period
+/// selector, but with multi-select checkboxes at the leaf level plus a
+/// "select all in district" shortcut. Selections persist across districts,
+/// so you can pick facilities in Bo, go back, then add more in Bombali.
+class _OrgUnitSelectPanel extends StatefulWidget {
+  final List<DistrictOrgUnit> districts;
+  final Set<String> selectedIds;
+  final ValueChanged<Set<String>> onChanged;
+  final VoidCallback onDone;
+
+  const _OrgUnitSelectPanel({
+    required this.districts,
+    required this.selectedIds,
+    required this.onChanged,
+    required this.onDone,
+  });
+
+  @override
+  State<_OrgUnitSelectPanel> createState() => _OrgUnitSelectPanelState();
+}
+
+class _OrgUnitSelectPanelState extends State<_OrgUnitSelectPanel> {
+  DistrictOrgUnit? _activeDistrict;
+  late Set<String> _selected;
+  String _query = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _selected = Set.of(widget.selectedIds);
+  }
+
+  int _selectedCountIn(DistrictOrgUnit d) => d.facilities.where((f) => _selected.contains(f.id)).length;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+      child: _activeDistrict == null ? _districtList() : _facilityList(_activeDistrict!),
+    );
+  }
+
+  Widget _districtList() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 4),
+            child: Text('Select a district', style: TextStyle(fontWeight: FontWeight.w600)),
+          ),
+        ),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: widget.districts.length,
+            itemBuilder: (context, index) {
+              final d = widget.districts[index];
+              final count = _selectedCountIn(d);
+              return ListTile(
+                dense: true,
+                leading: CircleAvatar(
+                  radius: 16,
+                  backgroundColor: count > 0 ? kBrandColor : Colors.grey.shade200,
+                  child: Icon(Icons.location_city, size: 16, color: count > 0 ? Colors.white : Colors.grey),
+                ),
+                title: Text(d.name),
+                subtitle: count > 0 ? Text('$count selected') : null,
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () => setState(() => _activeDistrict = d),
+              );
+            },
+          ),
+        ),
+        const Divider(height: 16),
+        _footer(),
+      ],
+    );
+  }
+
+  Widget _facilityList(DistrictOrgUnit district) {
+    final filtered =
+        district.facilities.where((f) => f.name.toLowerCase().contains(_query.toLowerCase())).toList();
+    final allSelected = district.facilities.isNotEmpty && district.facilities.every((f) => _selected.contains(f.id));
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.arrow_back),
+              color: kBrandColor,
+              onPressed: () => setState(() {
+                _activeDistrict = null;
+                _query = '';
+              }),
+            ),
+            Expanded(child: Text(district.name, style: const TextStyle(fontWeight: FontWeight.w600))),
+          ],
+        ),
+        TextField(
+          decoration: InputDecoration(
+            hintText: 'Search facilities...',
+            prefixIcon: const Icon(Icons.search),
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+          ),
+          onChanged: (v) => setState(() => _query = v),
+        ),
+        CheckboxListTile(
+          dense: true,
+          controlAffinity: ListTileControlAffinity.leading,
+          activeColor: kBrandColor,
+          title: Text('Select all in ${district.name}', style: const TextStyle(fontWeight: FontWeight.w500)),
+          value: allSelected,
+          onChanged: (v) {
+            setState(() {
+              for (final f in district.facilities) {
+                if (v == true) {
+                  _selected.add(f.id);
+                } else {
+                  _selected.remove(f.id);
+                }
+              }
+            });
+            widget.onChanged(_selected);
+          },
+        ),
+        Flexible(
+          child: ListView.builder(
+            shrinkWrap: true,
+            itemCount: filtered.length,
+            itemBuilder: (context, index) {
+              final f = filtered[index];
+              final checked = _selected.contains(f.id);
+              return CheckboxListTile(
+                dense: true,
+                controlAffinity: ListTileControlAffinity.leading,
+                activeColor: kBrandColor,
+                title: Text(f.name),
+                value: checked,
+                onChanged: (v) {
+                  setState(() {
+                    if (v == true) {
+                      _selected.add(f.id);
+                    } else {
+                      _selected.remove(f.id);
+                    }
+                  });
+                  widget.onChanged(_selected);
+                },
+              );
+            },
+          ),
+        ),
+        const Divider(height: 16),
+        _footer(),
+      ],
+    );
+  }
+
+  Widget _footer() {
+    return Row(
+      children: [
+        Text('${_selected.length} unit(s) selected', style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+        const Spacer(),
+        TextButton(
+          onPressed: widget.onDone,
+          style: TextButton.styleFrom(foregroundColor: kBrandColor),
+          child: const Text('Done'),
+        ),
+      ],
     );
   }
 }

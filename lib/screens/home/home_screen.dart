@@ -130,7 +130,10 @@ class HomeScreen extends StatelessWidget {
                                 final items = List<Map<String, dynamic>>.from(homecontroller.selectedDashboard['visualizations'] ?? []);
                                 return Column(
                                   children: items.map((item) {
-                                    return VisualizationWidget(item: item);
+                                    return Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: VisualizationWidget(item: item),
+                                    );
                                   }).toList(),
                                 );
                               },
