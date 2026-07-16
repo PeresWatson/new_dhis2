@@ -45,16 +45,6 @@ class SettingsScreen extends StatelessWidget {
           _syncCard(),
 
           const SizedBox(height: 16),
-          _section("DASHBOARD"),
-
-          _dashboardCard(),
-
-          const SizedBox(height: 16),
-          _section("APPEARANCE"),
-
-          _appearanceCard(),
-
-          const SizedBox(height: 16),
           _section("STORAGE"),
 
           _storageCard(),
@@ -153,40 +143,12 @@ class SettingsScreen extends StatelessWidget {
   }
 
   /// ===============================
-  /// DASHBOARD
-  /// ===============================
-  Widget _dashboardCard() {
-    return const Card(
-      child: Column(
-        children: [
-          ListTile(leading: Icon(Icons.dashboard), title: Text("Default Dashboard"), subtitle: Text("Home Analytics")),
-          ListTile(leading: Icon(Icons.star), title: Text("Favorites First"), trailing: Icon(Icons.toggle_on)),
-        ],
-      ),
-    );
-  }
-
-  /// ===============================
-  /// APPEARANCE
-  /// ===============================
-  Widget _appearanceCard() {
-    return Card(
-      child: Obx(() {
-        return SwitchListTile(
-          secondary: const Icon(Icons.dark_mode),
-          title: const Text("Dark Mode"),
-          value: c.darkMode.value,
-          onChanged: c.toggleDarkMode,
-        );
-      }),
-    );
-  }
-
-  /// ===============================
   /// STORAGE
   /// ===============================
   Widget _storageCard() {
     final storage = GetStorage();
+    final dashboardCachedData =  storage.read('simulated_dashboards');
+    final UserProfileCachedData =  storage.read('user_profile');
 
     final usedMb = getDataSizeBytes(storage.read('user_profile')) / (1024 * 1024);
 

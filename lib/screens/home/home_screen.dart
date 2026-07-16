@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:dhis_2/common/utils/charts/visualization_widget.dart';
 import 'package:dhis_2/common/widgets/network_banner.dart';
 import 'package:dhis_2/screens/home/home_screen_controller.dart';
 import 'package:dhis_2/screens/login/login_screen_controller.dart';
@@ -11,12 +12,14 @@ import 'package:dhis_2/common/utils/charts/pivotTableWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final LoginController logincontroller = Get.find<LoginController>();
   final homecontroller = Get.find<HomeController>();
+  final storage = GetStorage();
 
   final TextEditingController searchController = TextEditingController();
 
@@ -54,7 +57,7 @@ class HomeScreen extends StatelessWidget {
               children: [
                 // ================= HEADER =================
                 Container(
-                  color: Colors.blue[800],
+                  color: const Color(0xFF1D5288),
                   width: double.infinity,
                   height: 40,
                   child: Row(
@@ -64,25 +67,12 @@ class HomeScreen extends StatelessWidget {
                       const SizedBox(width: 10),
 
                       Text(
-                        "DHIS2 - ${homecontroller.simulatedDashboards["organization"]['name'] ?? 'User'}",
+                        "DHIS2 - ${storage.read('nationality') ?? 'Ministry Of Health'}",
                         style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 16, fontWeight: FontWeight.w600),
                       ),
 
                       const Spacer(),
 
-                      Visibility(
-                        visible: true,
-                        child: CircleAvatar(
-                          radius: 12,
-                          backgroundColor: const Color.fromARGB(255, 82, 70, 117),
-                          child: Text(
-                            homecontroller.simulatedDashboards != null
-                                ? "${homecontroller.simulatedDashboards["organization"]['country'][0].toUpperCase()}"
-                                : "U",
-                            style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
                       const SizedBox(width: 10),
                     ],
                   ),
@@ -115,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                         const SizedBox(width: 20),
 
                         Text(
-                          "${homecontroller.selectedDashboard.isEmpty ? 'Select Dashboard' : homecontroller.selectedDashboard['name']} ",
+                          "${homecontroller.selectedDashboard.isEmpty ? 'Select Dashboard' : homecontroller.selectedDashboard['displayName']} ",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -140,22 +130,7 @@ class HomeScreen extends StatelessWidget {
                                 final items = List<Map<String, dynamic>>.from(homecontroller.selectedDashboard['visualizations'] ?? []);
                                 return Column(
                                   children: items.map((item) {
-                                    final type = item['defaultRenderType']?.toString().toLowerCase();
-
-                                    if (type == 'line') {
-                                      return LineChartWidget(item: item);
-                                    } else if (type == 'bar') {
-                                      return BarChartWidget(item: item);
-                                    } else if (type == 'pie') {
-                                      return PieChartWidget(item: item);
-                                    } else if (type == 'kpi') {
-                                      return KPIWidget(item: item);
-                                    } else if (type == 'pivot') {
-                                      return PivotTableWidget(item: item);
-                                    } else if (type == 'map') {
-                                      return MapVisualizationWidget(item: item);
-                                    }
-                                    return const SizedBox.shrink();
+                                    return VisualizationWidget(item: item);
                                   }).toList(),
                                 );
                               },
@@ -226,7 +201,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                           onChanged: (value) {
                             filteredDashboards.value = (homecontroller.simulatedDashboards['dashboards'] as List)
-                                .where((d) => (d['name'] ?? '').toString().toLowerCase().contains(value.toLowerCase()))
+                                .where((d) => (d['displayName'] ?? '').toString().toLowerCase().contains(value.toLowerCase()))
                                 .toList();
                           },
                         ),
@@ -244,7 +219,7 @@ class HomeScreen extends StatelessWidget {
                                       final dashboard = filteredDashboards[index];
 
                                       return ListTile(
-                                        title: Text(dashboard['name'] ?? ''),
+                                        title: Text(dashboard['displayName'] ?? ''),
                                         onTap: () {
                                           hideDropdown();
                                           homecontroller.selectedDashboard = homecontroller.simulatedDashboards['dashboards'][index];
